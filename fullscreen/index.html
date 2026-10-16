@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commander Keen - The Mystery of Isis IIa</title>
+<link rel="icon" id="favicon">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; color: #ddd; font: 14px/1.4 system-ui, sans-serif; overflow: hidden; }
+  #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #000; }
+  #screen { image-rendering: pixelated; image-rendering: crisp-edges; outline: none; background: #000; }
+  #gear { position: fixed; top: 8px; right: 8px; z-index: 3; width: 34px; height: 34px; border: 1px solid #333; border-radius: 6px;
+    background: rgba(20, 20, 30, .7); color: #aaa; font-size: 20px; cursor: pointer; opacity: .35; transition: opacity .2s; }
+  #gear:hover, #gear:focus-visible { opacity: 1; }
+  #settings { position: fixed; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, .75); }
+  #settings[hidden] { display: none; }
+  .panel { width: min(560px, 92vw); max-height: 88vh; overflow: auto; padding: 18px 22px; border: 2px solid #5555ff; border-radius: 8px;
+    background: #0a0a24; box-shadow: 0 0 40px #0008; }
+  .panel h2 { margin: 0 0 4px; color: #ffff55; font-size: 18px; letter-spacing: .5px; }
+  .panel h3 { margin: 16px 0 6px; color: #55ffff; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+  .panel p.hint { margin: 0 0 8px; color: #888; font-size: 12px; }
+  .row { display: flex; align-items: center; gap: 12px; margin: 6px 0; }
+  .row label { flex: 0 0 130px; }
+  .row input[type=range] { flex: 1; accent-color: #5555ff; }
+  .row input[type=checkbox] { accent-color: #5555ff; }
+  select, button { font: inherit; color: #ddd; background: #1a1a40; border: 1px solid #44a; border-radius: 4px; padding: 3px 10px; cursor: pointer; }
+  button:hover, select:hover { border-color: #88f; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-weight: normal; color: #bbb; padding: 3px 8px 3px 0; white-space: nowrap; width: 1%; }
+  td { padding: 3px 0; }
+  .chip { margin: 1px 4px 1px 0; padding: 1px 8px; font-size: 12px; background: #22224a; }
+  .chip.add { color: #8f8; }
+  .footer { display: flex; justify-content: space-between; margin-top: 16px; }
+  #toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 4; padding: 8px 14px; border-radius: 6px;
+    background: #400; border: 1px solid #a33; opacity: 0; pointer-events: none; transition: opacity .3s; }
+  #toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="screen" width="320" height="200" tabindex="0"></canvas></div>
+<button id="gear" title="Settings (` or F10)" aria-label="Settings">&#9881;</button>
+
+<div id="settings" hidden>
+  <div class="panel" role="dialog" aria-label="Settings">
+    <h2>Settings</h2>
+    <p class="hint">The game is paused while this panel is open. Press ` (backquote), F10 or Esc to close.</p>
+
+    <h3>Audio</h3>
+    <div class="row"><label for="sfxVolume">Sound effects</label><input id="sfxVolume" type="range" min="0" max="100"></div>
+    <div class="row"><label for="musicVolume">Music</label><input id="musicVolume" type="range" min="0" max="100"></div>
+    <p class="hint">Sound and music can also be switched on or off from the in-game Options menu.</p>
+
+    <h3>Display</h3>
+    <div class="row"><label for="scale">Scaling</label>
+      <select id="scale"><option value="fit">Fit to window</option><option value="integer">Whole pixels only</option></select>
+      <button id="fullscreen">Fullscreen</button>
+    </div>
+
+    <h3>Controls</h3>
+    <div class="row"><label for="gamepad">Gamepad</label><input id="gamepad" type="checkbox"></div>
+    <div class="row"><label for="debugKeys">Cheat / debug keys</label><input id="debugKeys" type="checkbox"></div>
+    <p class="hint">Esc opens the menu and Enter selects; these can't be rebound. Some browsers keep Ctrl+W, Ctrl+number and
+      (on macOS) Ctrl+arrow for themselves, so Z / X are bound for jump / pogo as well.</p>
+    <table id="bindings"></table>
+
+    <div class="footer">
+      <button id="resetKeys">Reset controls</button>
+      <button id="closeSettings">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
+<input id="customFile" type="file" accept=".tmx,.xml" hidden>
+
+<script src="../data/assets.js"></script>
+<script src="../js/core.js"></script>
+<script src="../js/audio.js"></script>
+<script src="../js/input.js"></script>
+<script src="../js/constants.js"></script>
+<script src="../js/tmx.js"></script>
+<script src="../js/effects.js"></script>
+<script src="../js/weapons.js"></script>
+<script src="../js/items.js"></script>
+<script src="../js/enemies.js"></script>
+<script src="../js/objects.js"></script>
+<script src="../js/level.js"></script>
+<script src="../js/keen.js"></script>
+<script src="../js/hud.js"></script>
+<script src="../js/game.js"></script>
+<script src="../js/menu.js"></script>
+<script src="../js/worldmap.js"></script>
+<script src="../js/main.js"></script>
+</body>
+</html>
