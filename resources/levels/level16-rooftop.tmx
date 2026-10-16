@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="124" height="40" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16">
+  <image source="tiles.png" trans="81ff2c"/>
+ </tileset>
+ <tileset firstgid="7809" name="tiles_info" tilewidth="16" tileheight="16">
+  <image source="tiles_info.png" trans="81ff2c"/>
+ </tileset>
+ <tileset firstgid="7953" name="tiles_sprites" tilewidth="16" tileheight="16">
+  <image source="tiles_sprites.png" trans="81ff2c"/>
+ </tileset>
+ <layer name="TransBG" width="124" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3BAQEAAACCIP+vbkhAAQAAAAAAAAAAAAAAAAAAAAAAAHwYRrZdS4BNAAA=
+  </data>
+ </layer>
+ <layer name="BG1" width="124" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3WQQ2AQAxFwbrYBafgZHECTsAJnKgMSGck9KfJiwAA+Ja7RTzNHaqYesTc3aGKJX979d9ljNx6s3cZe2592LuMM7e+7K3P0efoc/Q5+hx9jj5Hn6PP0efoc/S5Pkefo8/R5+hz9Dn6HH2OPkefo8/R5wAAwE+9bjklHIBNAAA=
+  </data>
+ </layer>
+ <layer name="BG2" width="124" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+2bQUrDQBSGxxlETzBkqyC6Vc+RhXqNbFRQ9AzdqKDoLVRQdK94EcVj+JdZtCmVqQ22yev3wU+YEJJ574NJFhnnbFLGesA2VawHbNOL9QC+wZ5vwDfgG/AN+AZ8A74B34BvwDfgG/AN+MY34BvwDfgGfAO+Ad+A78Vh9P//SfYBrATnPrxzyzq++ZQ+XuOlMBi/+3RuNaRr5+l7mjotMvr//yT7ADbl7lsuN3T89Cl91jVeC4Pxl0/ntkK6dp6+p6kTWM8trM+zvH9T37Nel9v+Hvjvdavp/XO+twvndpTdoh3r8l+fl5s/1NlTn/aVg2Lx5m/pG/JEdZzGfF2H6tORctxR37n5n6nu81/6YOkb8lp13MR8XRfq06Vy1VHfufnfqu67MX0oh/ZQlgbypDzHfF336tOD8lh0s87c/F+U1zF9qIbGlbFYratJH3qEEEIIIaTV+QHt2kplgE0AAA==
+  </data>
+ </layer>
+ <layer name="FG1" width="124" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3BAQEAAACCIP+vbkhAAQAAAAAAAAAAAAAAAAAAAAAAAHwYRrZdS4BNAAA=
+  </data>
+ </layer>
+ <layer name="FG2" width="124" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3BAQEAAACCIP+vbkhAAQAAAAAAAAAAAAAAAAAAAAAAAHwYRrZdS4BNAAA=
+  </data>
+ </layer>
+ <layer name="TransFG" width="124" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3BAQEAAACCIP+vbkhAAQAAAAAAAAAAAAAAAAAAAAAAAHwYRrZdS4BNAAA=
+  </data>
+ </layer>
+ <layer name="Info" width="124" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3bSwrDIBhF4XQHXYHZa7qTdKMdhICDUkJ8Vj/hjgLKORd/nGQLy7LJVBlxzcB414m+9a1vfWPjBBsn2DjBxgk2TrBxgo0TfXOib31b+tY3Nn1j4wQbJ9g4wcYJNk6wcYKNE2yc6LtXJ3u49+3f+m7B2auTV/ie0e53bU4zzzzP7aT03Mqxf0rftedyrfNSnJSeW6n7p97v2nO5xnkjzrzneqT39S7s/bEe+dV3yzdkLv6z770Trlbr7DtmH/Gfuvh+z/xmi+/3yP+B6/t63yIiIiIi0jYfcxRah4BNAAA=
+  </data>
+ </layer>
+ <layer name="Sprites" width="124" height="40">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3asRFAUAwGYCuYIAOYCCNYRqFmRTbQPI1TKHAP39fkLs2fdClSRQEAAAAAAAAAAAAAkLU+zvW+YvDnDbxEF//IBADYjBncIuXBDHXqNam2N805PbT/vMtZ3IAAAADAxVZOu7eagE0AAA==
+  </data>
+ </layer>
+</map>

@@ -21,6 +21,19 @@
     inv3: () => keen.invCurrent === 2,
   };
 
+  // One button per level; Shift+click plays the level's cut-scene and world map first
+  const warp = document.getElementById('warp');
+  if (warp) {
+    LEVEL_NAMES.forEach((name, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.warp = String(i + 1);
+      btn.textContent = String(i + 1);
+      btn.title = `Level ${i + 1}: ${name}`;
+      warp.appendChild(btn);
+    });
+  }
+
   controls.addEventListener('mousedown', (e) => {
     // Keep keyboard focus off the buttons, so Space and Enter keep going to the game
     if (e.target.closest('button')) e.preventDefault();
@@ -38,6 +51,7 @@
       Settings.save();
     } else if (btn.id === 'btn-settings') document.getElementById('gear').click();
     else if (btn.id === 'btn-full') document.getElementById('stage').requestFullscreen().catch(() => {});
+    else if (btn.dataset.warp) warpToLevel(Number(btn.dataset.warp), e.shiftKey);
     else if (press) Input.press(press);
     if (Input.inView && btn.id !== 'btn-settings') document.getElementById('screen').focus({ preventScroll: true });
     refresh();
@@ -48,6 +62,7 @@
     for (const btn of controls.querySelectorAll('button')) {
       const key = btn.dataset.toggle || btn.dataset.press;
       if (STATE[key]) btn.setAttribute('aria-pressed', String(!!STATE[key]()));
+      if (btn.dataset.warp) btn.setAttribute('aria-pressed', String(inLevel() && game.level_ID === Number(btn.dataset.warp) && !game.custom));
       if (btn.dataset.needs === 'level') btn.disabled = !inLevel();
       else if (btn.dataset.needs === 'cheats') btn.disabled = !inLevel() || !Settings.debugKeys;
       else if (btn.dataset.needs === 'inventory') {

@@ -151,10 +151,10 @@ class Keen extends Sprite {
     this.touchSwitch = false;
   }
 
-  // Frame from the current sprite sheet; missing frames (the EGA sheet is shorter) keep the last image
+  // Frame from the current sprite sheet; frames missing from the shorter EGA sheet (weapons) use its standing frame
   spr(i, sheet) {
-    const img = this.imgSprites[sheet === undefined ? this.sprite : sheet][i];
-    return img || this.image;
+    const frames = this.imgSprites[sheet === undefined ? this.sprite : sheet];
+    return frames[i] || frames[this.direction === sDIR_LEFT ? this.SPRITE_RUN_LEFT : this.SPRITE_RUN_RIGHT] || this.image;
   }
 
   heal(amount) {

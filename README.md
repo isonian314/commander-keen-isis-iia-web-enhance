@@ -125,7 +125,7 @@ Points come **only from point items**; shooting enemies scores nothing. Picking 
 | <img src="docs/img/item-sugar.png"> | Bag o' Sugar | 2,000 | 8,000 |
 | <img src="docs/img/item-cereal.png"> | IQ Cereal | 5,000 | 20,000 |
 
-All nine levels together hold 385,400 points' worth of items (before multipliers).
+The original nine levels together hold 385,400 points' worth of items (before multipliers); with levels 10–16 the total is 445,700.
 
 ### End-of-level statistics
 
@@ -176,7 +176,7 @@ Only one powerup is active at a time; picking up another replaces it. The HUD sh
 
 <img src="docs/img/keen-god.png"> <img src="docs/img/keen-crazy.png"> <img src="docs/img/keen-spew.png">
 
-God Mode and Regeneration exist in the code but aren't placed in any of the nine levels.
+God Mode and Regeneration exist in the code but aren't placed in any level.
 
 ## Inventory
 
@@ -309,10 +309,10 @@ The piranha of Isis. It starts opening its mouth when Keen is within 64 pixels a
 
 A poisonous sea-floor spike. Its spikes twitch when Keen comes within 50 pixels. Because it can't be killed, level 6 can never show 100% enemies.
 
-#### Floppy and the radioactive fish (not in any level)
+#### Floppy and the radioactive fish (level 12)
 <img src="docs/img/enemy-floppy.png"> <img src="docs/img/enemy-fish-yellow.png"> <img src="docs/img/enemy-fish-green.png"> <img src="docs/img/enemy-fish-blue.png">
 
-A one-eyed stingray and deformed fish, the results of a nuclear testing site on Isis. They're drawn and described in the Help but never used.
+A one-eyed stingray and deformed fish, the results of a nuclear testing site on Isis. They're drawn and described in the Help but weren't used in the original nine levels; the new Ocean Moat (level 12) places them, though they only drift for now.
 
 ### Army slaves
 
@@ -408,9 +408,9 @@ Isonians shoot when Keen is in front within 96 pixels and at the same height, on
 
 A small Isonian craft parked in the Hangar. It floats back and forth and doesn't shoot; it looks like an unfinished enemy.
 
-### Not used in the nine levels
+### Not used in the original nine levels
 
-These enemies are fully coded but never placed. They can appear in custom levels, except the Shapeshifter and Evil Keen, which are removed from them too.
+These enemies are fully coded but were never placed in the original nine levels. They can appear in custom levels, except the Shapeshifter and Evil Keen, which are removed from them too. The new levels 13–16 use most of them: Yorps, Gargs and Slugs on the Secret Island, the garden grubs and the bird in the Castle Garden and Imperial Castle, and Evil Keen and the Shapeshifter as stand-ins for RoboKeen and Mort on the rooftop.
 
 <img src="docs/img/enemy-caterpillar.png"> <img src="docs/img/enemy-dragonfly.png"> <img src="docs/img/enemy-snail.png"> <img src="docs/img/enemy-foog-warrior.png">
 
@@ -448,7 +448,7 @@ Some tiles hurt Keen for 1, 2 or 5 on contact, and some kill him outright. Deadl
 
 ## Levels
 
-Nine levels were built. Each one ends at an exit that leads to the next, with a cutscene in between. Item and point totals are the amounts needed for 100%; enemy counts include only enemies that count in the statistics (not mines, rocks or drips).
+The original game has nine levels. Levels 10–16 are new, generated placeholder levels (see [TODO.md](TODO.md)) that complete the story from the design doc, so the game now runs from the jungle to the epilogue. Each level ends at an exit that leads to the next, with a cutscene in between; the Ocean Moat has a second, hidden exit to the Secret Island, and both routes continue to the Castle Garden. Item and point totals are the amounts needed for 100%; enemy counts include only enemies that count in the statistics (not mines, rocks or drips).
 
 | # | Level | Size (tiles) | Music | Enemies | Items for 100% | Points | Keys |
 | ---: | --- | --- | --- | ---: | ---: | ---: | --- |
@@ -461,6 +461,13 @@ Nine levels were built. Each one ends at an exit that leads to the next, with a 
 | 7 | Hangar | 100 × 40 | The Core | 10 | 21 | 2,900 | cyan |
 | 8 | Central Command | 140 × 150 | Rhythm of a Robot | 23 | 37 | 7,500 | yellow, green, blue |
 | 9 | Dungeon | 145 × 101 | Cistern | 19 | 51 | 16,800 | red, yellow, cyan |
+| 10 | Barracks | 150 × 46 | The Core | 9 | 60 | 15,000 | red |
+| 11 | Missile Tower | 82 × 112 | Flooded Flashback | 11 | 49 | 6,400 | yellow |
+| 12 | Ocean Moat | 172 × 66 | Branching Out Remix | 15 | 36 | 3,900 | none |
+| 13 | Secret Island | 124 × 42 | Branching Out | 10 | 23 | 2,300 | cyan |
+| 14 | Castle Garden | 152 × 46 | Art of Gardens | 10 | 20 | 2,000 | green |
+| 15 | Imperial Castle | 140 × 58 | Cistern | 12 | 81 | 30,000 | blue, yellow |
+| 16 | Rooftop Showdown | 124 × 40 | Rhythm of a Robot | 2 | 5 | 700 | none |
 
 ### 1. Jungle
 
@@ -559,10 +566,87 @@ Nine levels were built. Each one ends at an exit that leads to the next, with a 
 * Keen lands with 5 health missing after the fall. The dungeon is littered with bad powerups: 14 Degeneration and 10 Crazy Keen (with 4 Anti Powerups).
 * **Enemies:** Jumping Foog 5, Foog 4, Blue Mouth 4, Spider 3, Garnak 2, and one Cyborg Lemming
 * **Pickups:** Blowgun ×1, Zeffer ×3, Pulsar ×1, Solarizer ×1 · 2 Batteries, Chocolate Yorp
-* The exit ends the game with a "thanks for playing" screen.
+* The exit used to end the game with a "thanks for playing" screen; it now leads on to the Barracks.
 * [Full map](resources/maps/level9-dungeon-full.png)
 
-The game has slots for seven more levels that were never made: *Barracks, Missile Tower, Ocean Moat, Secret Island, Castle Garden, Imperial Castle* and *Rooftop Showdown*. Custom levels play the track "Art of Gardens". The level music is by GameBird, and "Art of Gardens" is from danosongs.com.
+### 10. Barracks
+
+<img src="screenshots/lvl10.png" width="400">
+
+> "Nobody here... they must be out boarding the fleet!"
+
+* A three-storey Isonian base building: white platforms, blue panel walls and poles between the floors. The red key on the top floor opens the way out on the ground floor, and a two-way door leads up to a bonus area on the roof. Two checkpoints.
+* **Enemies:** Lemming 3, Cyborg Lemming 2, Lemming Truckie 1, Alien Trucky 1, Grey Robot 1, Red Robot 1
+* **Pickups:** Zeffer ×1, Pulsar ×1 · Pyapa Fruit, Nephthys Fruit
+* [Full map](resources/maps/level10-barracks-full.png)
+
+### 11. Missile Tower
+
+<img src="screenshots/lvl11.png" width="400">
+
+> "(angrily) This won't be leaving Isis II... Ever."
+
+* A seven-floor climb up the tower by poles and platform stairs. The yellow key halfway up opens the launch deck at the top, where **Robo Grey** guards the exit. One checkpoint.
+* **Enemies:** Grey Robot 2, Lemming 2, Isonian fighter 2, Cyborg Lemming 1, Red Robot 1, Lemming Truckie 1, Robo Grey 1, Robo Blue 1. Robo Grey and Robo Blue have no code of their own yet; they behave as a tougher Grey Robot and Flasher.
+* **Pickups:** Zeffer ×1, Pulsar ×1 · Life Potion
+* [Full map](resources/maps/level11-missile_tower-full.png)
+
+### 12. Ocean Moat
+
+<img src="screenshots/lvl12.png" width="400">
+
+> "I think I know who I'm going to find over there. Earth isn't getting pushed around by the likes of you, do you hear me?"
+
+* Keen starts in the water and swims across the Sea of Isis to the castle island (exit to level 14). A shaft in the sea floor leads to a fork with two signs in the Standard Galactic Alphabet: "TAKE THE BLUE PILL" loops back up to the sea, while "TAKE THE RED PILL" leads down to a flooded brimstone grotto with lava pools, the **Devil**, the **Solarizer** and a hidden exit to the Secret Island (level 13).
+* **Enemies:** Redfish 4, Chomper 2, Floppy 2, Urchin 2, Yellow fish 2, Green fish 1, Blue fish 1, Devil 1 (the Devil is a tougher Demon for now)
+* **Pickups:** Harpoon ×1, Solarizer ×1 · Isis Fruit, Life Potion
+* [Full map](resources/maps/level12-ocean-full.png)
+
+### 13. Secret Island
+
+<img src="screenshots/lvl13.png" width="400">
+
+> "Yorps? Gargs? I haven't seen those since Vorticon VI! What are they doing out here?"
+
+* A Keen 1 throwback: Keen turns into his EGA self for this level. The Raygun lies near the start and the Neural Stunner in a cave in the cliff; the cyan key on the cliff top opens the gate to the exit, which leads on to the Castle Garden.
+* **Enemies:** Yorp 4, Garg 3, Slug 3
+* **Pickups:** Raygun ×1, Neural Stunner ×1 · 2 Chocolate Yorps, Nephthys Fruit
+* [Full map](resources/maps/level13-secret-full.png)
+
+### 14. Castle Garden
+
+<img src="screenshots/lvl14.png" width="400">
+
+> Keen emerges from the water and races into the castle's garden.
+
+* Built from the new garden tile set (hedges and plants). Hedge stairs lead up to the green key, there's a pond with a swimming frog, and the level ends at the castle gate (the green door) and entrance hall.
+* **Enemies:** Snail 2, Giant Dragonfly 2, Foog Warrior 2, Frog 1 (+1 swimming), Caterpillar 1, Bird 1. Foog Warriors have 500 HP, so go around them.
+* **Pickups:** Peeta Berries, Isis Fruit, Life Potion
+* [Full map](resources/maps/level14-castle_garden-full.png)
+
+### 15. Imperial Castle
+
+<img src="screenshots/lvl15.png" width="400">
+
+> Keen enters the Imperial Castle, preparing for the final showdown.
+
+* Four stone storeys with paintings, torches and cages. The blue key on the second floor opens the rest of the ground floor; climb to the third floor for the yellow key, then take the pole up to the roof, where the yellow door leads to the stairs (exit). One checkpoint.
+* **Enemies:** Foog Warrior 3, Regular Isonian 2, Military Isonian 2, Scientist Isonian 2, Isonian fighter 1, Grey Robot 1, Red Robot 1
+* **Pickups:** Life Potion, Chocolate Yorp
+* [Full map](resources/maps/level15-castle-full.png)
+
+### 16. Rooftop Showdown
+
+<img src="screenshots/lvl16.png" width="400">
+
+> "They said you wouldn't make it this far... You are obsolete." (RoboKeen)
+
+* Two arenas on the castle roof. **RoboKeen** (Evil Keen stands in for him) waits in the first. The door marked "314" (with a "THREE ONE FOUR" sign) plays a dialogue in the middle of the level: RoboKeen's last words, then **Mort**. Behind it, Mort (the Shapeshifter stands in) fights Keen in the second arena, where the HR-42 and the Plutezarp lie. The far exit plays the epilogue.
+* **Enemies:** Evil Keen (RoboKeen) 1, Shapeshifter (Mort) 1
+* **Pickups:** HR-42 ×1, Plutezarp ×1 · Life Potion, Pyapa Fruit
+* [Full map](resources/maps/level16-rooftop-full.png)
+
+Custom levels play the track "Art of Gardens". The level music is by GameBird, and "Art of Gardens" is from danosongs.com. The new levels reuse the existing tracks for now.
 
 ## Story
 
@@ -586,7 +670,7 @@ At the top of Central Command an Isonian commander is waiting for him: "Impressi
 
 <img src="docs/img/story-advisor.png" width="320"> <img src="docs/img/story-trapdoor.png" width="320"> <img src="docs/img/story-worldmap.png" width="320">
 
-Escaping the dungeon is where the finished game stops. The remaining levels (the barracks, the missile tower, the ocean moat and the Grand Advisor's island castle) were planned but never built, so the story ends on a cliffhanger.
+Escaping the dungeon is where the original game stopped. The rest of the story, from the design doc, is now playable with placeholder levels and text cut-scenes. Keen sneaks through the empty barracks (level 10), climbs the missile tower, reprograms the missile and scrambles the fleet's controls (level 11), then dives into the Sea of Isis towards the castle island (level 12). A hidden grotto under the sea leads to a secret island full of Yorps and Gargs (level 13). In the castle garden (level 14) and the Imperial Castle (level 15) he fights his way up to the roof. There RoboKeen, built to be "the new Commander Keen", is waiting (level 16), followed by Mort behind a door marked "314". In the epilogue the shapeshifter confesses that the Isonians are being controlled, and a viewscreen reveals "PHASE 1 COMPLETE... PHASE 2 UNDERWAY". To be continued...
 
 ## Cheats and debug keys
 
@@ -603,6 +687,9 @@ The developer keys from the Python version are on by default. Turn them off in t
 | `C` | Change the statistics text colour |
 | `H` | Show solid and hidden areas on/off |
 | `M` | A leftover developer message (shows an internal movement value) |
+| `N` / `B` | Warp to the next / previous level |
+
+The web page also has **Warp to level** buttons for levels 1–16 (Shift+click plays the level's cut-scene first), and with cheat keys on every level is unlocked in *Load Level*.
 
 ## Quirks and curiosities
 
@@ -614,7 +701,7 @@ This port copies the original's behaviour exactly, oddities included. Some of th
 * The Urchins in level 6 can't be killed, so that level's enemy score can never reach 100%.
 * A Solarizer shot hitting a wall creates 100 explosions on the same spot.
 * Level 9 knocks 5 off Keen's health every time it starts, even after losing a life.
-* The sprite sheets include an EGA-style Keen and a pyjama-clad "Keen Dreams" Keen. A level can switch Keen to the EGA look, but none of the nine do.<br><img src="docs/img/keen-ega.png"> <img src="docs/img/keen-dreams.png">
+* The sprite sheets include an EGA-style Keen and a pyjama-clad "Keen Dreams" Keen. A level can switch Keen to the EGA look; none of the original nine do, but the new Secret Island (level 13) does.<br><img src="docs/img/keen-ega.png"> <img src="docs/img/keen-dreams.png">
 * Your inventory and battery capacity carry over into a new game.
 
 Credits: project lead and programming by Geoff; story by pLeitorian, eK and Ceilick; art by eK, AA, Geoff and tulip; sound effects by Mike Koenig; music by GameBird. Isis II began in the late 1990s as a Worminator mod by David Layne (DML1001) and was continued by Charles Byrd until 2002, before being reborn as this PyGame game.

@@ -565,6 +565,10 @@ const SHOOTERS = {
   [SPRITE_SLUG]: { hp: 2, damage: 1, sheet: [32, 32, 'enemy_slug.png'], fps: 4, walk: [0, 1], shoot: [2, 3, 3],
     die: [4, 7], speed: 30, bullet: SPRITE_SLUG_PROJ, random: 2, delay: 3 },
 };
+// Bosses with no art or AI yet borrow a tougher version of an existing enemy, so levels can already place them
+SHOOTERS[SPRITE_ROBO_GREY] = { ...SHOOTERS[SPRITE_ROBOT_GREY], hp: 40, prox: [160, 16], delay: 1 };
+SHOOTERS[SPRITE_ROBO_BLUE] = { ...SHOOTERS[SPRITE_ROBOT_FLASHER], hp: 40, prox: [160, 16], delay: 1.5 };
+SHOOTERS[SPRITE_DEVIL] = { ...SHOOTERS[SPRITE_DEMON], hp: 30, prox: [120, 16], delay: 1 };
 
 class EnemyShooter extends EnemyBase {
   constructor(x, y, id, dir) {
@@ -1062,7 +1066,8 @@ class EnemyEvilKeen extends EnemyBase {
   constructor(x, y, id, dir) {
     super(x, y, id, dir);
     this.vx = dir;
-    this.hitPoints = this.maxHit = 2;
+    // Boss hit points: Evil Keen stands in for RoboKeen in the Rooftop Showdown
+    this.hitPoints = this.maxHit = 24;
     this.damage = 1;
     this.FPS = 1000.0 / 8;
     this.walkFrame = 0;
@@ -1156,7 +1161,8 @@ class EnemyShapeShifter extends EnemyBase {
     super(x, y, id, dir);
     this.vx = dir;
     this.state = ENEMY_STATE_IDLE;
-    this.hitPoints = this.maxHit = 2;
+    // Boss hit points: the Shapeshifter is "Mort" in the Rooftop Showdown
+    this.hitPoints = this.maxHit = 32;
     this.damage = 1;
     this.FPS = 1000.0 / 8;
     this.idleFrame = 0;

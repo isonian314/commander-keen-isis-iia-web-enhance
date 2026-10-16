@@ -4,6 +4,11 @@
 const MENU_MAIN = 0, MENU_HELP = 1, MENU_DISPLAYTEXT = 2, MENU_LOAD = 3, MENU_OPTIONS = 4;
 const HELP_TEXT_NAMES = ['menu_controls.png', 'menu_story.png', 'menu_isis.png', 'menu_items.png', 'menu_history.png'];
 
+// Load Level: levels reached so far, or every level while the cheat keys are on
+function levelUnlocked(game, i) {
+  return i === 0 || Settings.debugKeys || trunc(game.SAVED_DATA[i].ranking) !== -1;
+}
+
 class Menu {
   constructor() {
     this.menuType = MENU_MAIN;
@@ -50,7 +55,7 @@ class Menu {
       blit(g, this.srfcBlank, 0, 0);
       blit(g, this.srfcHelpTitles[5], 65, 37);
       for (let i = 0; i < 16; i++) {
-        const locked = trunc(game.SAVED_DATA[i].ranking) === -1 && i !== 0;
+        const locked = !levelUnlocked(game, i);
         const col = locked ? [100, 100, 200] : [255, 255, 255];
         blit(g, fontCK_SMALL.render('Level ' + (i + 1), 1, col), i < 8 ? 100 : 170, 62 + (i % 8) * 10);
       }
@@ -82,8 +87,8 @@ class Menu {
         else if (this.menuIndex === 3) quit = true;
       }
     } else if (this.menuType === MENU_LOAD) {
-      if (down && this.menuLoadIndex < this.menuLoadMax && game.SAVED_DATA[this.menuLoadIndex + 1].ranking >= 0) this.menuLoadIndex += 1;
-      if (up && this.menuLoadIndex > 0 && game.SAVED_DATA[this.menuLoadIndex - 1].ranking >= 0) this.menuLoadIndex -= 1;
+      if (down && this.menuLoadIndex < this.menuLoadMax && levelUnlocked(game, this.menuLoadIndex + 1)) this.menuLoadIndex += 1;
+      if (up && this.menuLoadIndex > 0 && levelUnlocked(game, this.menuLoadIndex - 1)) this.menuLoadIndex -= 1;
       if (enter) {
         game.level_ID = this.menuLoadIndex + 1;
         game.cutScene_ID = 1;

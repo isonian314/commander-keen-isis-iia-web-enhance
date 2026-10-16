@@ -102,6 +102,7 @@ function frame() {
     case STATE_CUTSCENE: stepCutscene(events, dt); break;
     case STATE_WORLDMAP: stepWorldMap(events, dt); break;
     case STATE_LEVEL: stepLevel(events, t, dt); break;
+    case STATE_DIALOGUE: stepDialogue(events); break;
     case STATE_FADEOUT_NEXTLEVEL:
     case STATE_FADEOUT_KILL:
     case STATE_FADEOUT_GAMEOVER: stepFade(dt); break;
@@ -143,6 +144,8 @@ function stepMenu(events, dt) {
 
 function startLevel() {
   playSound(SFX_LEVEL_START);
+  game.dialoguesSeen.clear();
+  if (keen.sprite === kSPRITE_EGA) keen.sprite = kSPRITE_NORMAL;
   level.reset();
   loadLevelData();
   level.build(game, keen);
@@ -178,8 +181,68 @@ function loadLevelData() {
   tmxToLevel(game.custom ? game.customLevel : levelData[game.level_ID - 1], level);
 }
 
+// Music track (index into MUSIC) per level. Levels 10-16 reuse existing tracks until they get their own.
+const LEVEL_MUSIC = [0, 1, 2, 3, 4, 5, 6, 7, 8, 6, 5, 1, 0, 9, 8, 7];
+
 function playLevelMusic() {
-  Sound.playMusic(game.custom ? 15 : game.level_ID - 1);
+  Sound.playMusic(game.custom ? 15 : LEVEL_MUSIC[game.level_ID - 1]);
+}
+
+// Level select for testing: start a level straight away, or (withCutscene) from its cut-scene and world map.
+// Keen keeps his current lives, score, weapons and inventory; a fresh Keen is used when warping from the title screen.
+function warpToLevel(id, withCutscene) {
+  if (!game || id < 1 || id > LEVEL_FILES.length) return;
+  if (game.state === STATE_MENU || game.state === STATE_QUIT || game.custom) keen.reset();
+  Sound.stopMusic();
+  game.custom = false;
+  game.customLevel = null;
+  game.afterWait = null;
+  game.waitUntil = 0;
+  game.dialogue = null;
+  game.mapRoute = null;
+  game.level_ID = id;
+  menu.active = false;
+  keen.checkPoint = false;
+  keen.sprite = kSPRITE_NORMAL;
+  keen.hasKey = [false, false, false, false, false, false];
+  if (keen.health <= 0) keen.health = 10;
+  if (keen.lives <= 0) keen.lives = 3;
+  if (withCutscene) {
+    game.loadCutScenes(id);
+    game.cutScene_ID = 1;
+    game.fadeOut = false;
+    game.fadeIn = true;
+    game.fadeTimer = game.fadeTime;
+    game.state = STATE_CUTSCENE;
+  } else {
+    game.fadeIn = game.fadeOut = false;
+    startLevel();
+  }
+}
+
+// Mid-level dialogue (an exit numbered as the current level): show the frames, then carry on with the level
+function startDialogue(id) {
+  for (const e of level.sprite_Exits) if (e.id === id) e.kill();
+  const script = CUTSCENE_DIALOGUES[id];
+  if (!script || game.dialoguesSeen.has(id)) return;
+  game.dialoguesSeen.add(id);
+  game.dialogue = { frames: buildScriptFrames(script).slice(1), index: 0 };
+  game.state = STATE_DIALOGUE;
+}
+
+function stepDialogue(events) {
+  const d = game.dialogue;
+  for (const ev of events) {
+    if (ev.actions.includes('menu')) d.index = d.frames.length;
+    else d.index += 1;
+  }
+  if (d.index >= d.frames.length) {
+    game.dialogue = null;
+    game.state = STATE_LEVEL;
+    Input.clear();
+    return;
+  }
+  blit(ctx, d.frames[d.index], 0, 0);
 }
 
 function stepCutscene(events, dt) {
@@ -252,6 +315,9 @@ function stepLevel(events, t, dt) {
       game.reset();
       game.custom = false;
       game.state = STATE_MENU;
+    } else if (Settings.debugKeys && !game.custom && (ev.actions.includes('dbgNext') || ev.actions.includes('dbgPrev'))) {
+      warpToLevel(game.level_ID + (ev.actions.includes('dbgNext') ? 1 : -1), false);
+      return;
     } else {
       for (const a of ev.actions) keen.checkSingleKey(a, level, game);
     }
@@ -310,15 +376,18 @@ function checkCollisions() {
   }
 
   const exits = spritecollide(keen, level.sprite_Exits, collideRect);
-  if (exits.length > 0) {
+  if (exits.length > 0 && !game.custom && exits[0].id === game.level_ID) {
+    startDialogue(exits[0].id);
+  } else if (exits.length > 0) {
     musicFadeout(500);
     keen.sprite = 0;
     if (!game.custom) {
       const oldLevel = game.level_ID;
-      game.level_ID = exits[0].id;
+      // Any other exit from the last level leads to the epilogue
+      game.level_ID = oldLevel === LEVEL_FILES.length ? LEVEL_FILES.length + 1 : exits[0].id;
       game.mapRoute = { from: oldLevel, to: game.level_ID };
       game.loadCutScenes(game.level_ID);
-      game.drawStats(level, keen, oldLevel, exits[0].id);
+      game.drawStats(level, keen, oldLevel, game.level_ID);
       game.state = STATE_FADEOUT_NEXTLEVEL;
       game.fadeTimer = game.fadeTime * 2;
       playSound(SFX_LEVEL_FINISH);

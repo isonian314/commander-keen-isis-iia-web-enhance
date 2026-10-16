@@ -2,17 +2,19 @@
 // Game state, save data, end-of-level statistics and debug flags (isis_cutscenes.py, isis_zip.py)
 
 const STATE_MENU = 0, STATE_LEVEL = 1, STATE_CUTSCENE = 2, STATE_FADEOUT_NEXTLEVEL = 3, STATE_FADEOUT_KILL = 4,
-  STATE_FADEOUT_GAMEOVER = 5, STATE_QUIT = 6, STATE_WORLDMAP = 7;
+  STATE_FADEOUT_GAMEOVER = 5, STATE_QUIT = 6, STATE_WORLDMAP = 7, STATE_DIALOGUE = 8;
 
 const DEBUG_NIL = 0, DEBUG_HELLO = 1, DEBUG_STATS = 2;
 
-// Cut-scene sheet per level id (0 = intro, 10 = ending; frame 0 of a level's sheet is replaced by the stats screen)
+// Cut-scene sheet per level id (0 = intro; frame 0 of a level's sheet is replaced by the stats screen).
+// Levels 10-16 and the epilogue (17) use the scripted cut-scenes in cutscenes.js.
 const CS_NAMES = ['cutscene-intro.png', 'cutscene1.png', 'cutscene2.png', 'cutscene3.png', 'cutscene4.png', 'cutscene5.png',
-  'cutscene6.png', 'cutscene7.png', 'cutscene8.png', 'cutscene9.png', 'cutscene-ending.png', 'cutscene5.png', 'cutscene5.png',
-  'cutscene5.png', 'cutscene5.png', 'cutscene5.png', 'cutscene5.png', 'cutscene-ending.png'];
+  'cutscene6.png', 'cutscene7.png', 'cutscene8.png', 'cutscene9.png'];
 
 const LEVEL_FILES = ['level1-jungle.tmx', 'level2-jungle.tmx', 'level3-mountain.tmx', 'level4-cave.tmx', 'level5-minefield.tmx',
-  'level6-artillery.tmx', 'level7-hangar.tmx', 'level8-central_command.tmx', 'level9-dungeon.tmx'];
+  'level6-artillery.tmx', 'level7-hangar.tmx', 'level8-central_command.tmx', 'level9-dungeon.tmx', 'level10-barracks.tmx',
+  'level11-missile_tower.tmx', 'level12-ocean.tmx', 'level13-secret.tmx', 'level14-castle_garden.tmx', 'level15-castle.tmx',
+  'level16-rooftop.tmx'];
 
 const LEVEL_NAMES = ['Jungle', 'Jungle Nights', 'Mountain', 'Cave', 'Minefield', 'Artillery Division', 'Hangar',
   'Central Command', 'Dungeon', 'Barracks', 'Missile Tower', 'Ocean Moat', 'Secret Island', 'Castle Garden',
@@ -136,6 +138,9 @@ class Game {
     // Emulated pygame.time.wait(): the main loop holds the current frame until this time
     this.waitUntil = 0;
     this.afterWait = null;
+    // Mid-level dialogue being shown, and the levels whose dialogue has played (so it doesn't repeat after a death)
+    this.dialogue = null;
+    this.dialoguesSeen = new Set();
   }
 
   reset() {
@@ -143,6 +148,7 @@ class Game {
     this.cutScene_ID = 0;
     this.custom = false;
     this.customLevel = null;
+    this.dialoguesSeen.clear();
   }
 
   // Options menu Sound / Music switches
@@ -171,7 +177,8 @@ class Game {
   }
 
   loadCutScenes(id) {
-    this.srfcCutScenes = splice(320, 200, this.CSNames[id] || this.CSNames[0], 0, 0);
+    const script = CUTSCENE_SCRIPTS[id];
+    this.srfcCutScenes = script ? buildScriptFrames(script) : splice(320, 200, this.CSNames[id] || this.CSNames[0], 0, 0);
   }
 
   // Record progress and draw the "level complete" screen over frame 0 of the next cut-scene

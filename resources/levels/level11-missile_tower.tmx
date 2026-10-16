@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="82" height="112" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16">
+  <image source="tiles.png" trans="81ff2c"/>
+ </tileset>
+ <tileset firstgid="7809" name="tiles_info" tilewidth="16" tileheight="16">
+  <image source="tiles_info.png" trans="81ff2c"/>
+ </tileset>
+ <tileset firstgid="7953" name="tiles_sprites" tilewidth="16" tileheight="16">
+  <image source="tiles_sprites.png" trans="81ff2c"/>
+ </tileset>
+ <layer name="TransBG" width="82" height="112">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3BMQEAAADCoPVPbQo/oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G9NfvyugI8AAA==
+  </data>
+ </layer>
+ <layer name="BG1" width="82" height="112">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3UuQ1CQRBEweXG++TvcZMGN2lwEwadxCLxVU9qa6xxqhRJkiRJkvQvzZtSFtkyW2XrbJNNs1lT996m9vnnkB2zU3bOLtk22zV1723qnn8e2TN7Ze/sk12zW1P33qZ6k1L62SAbZqNsnHWy7qTunY985CMf+chHPvKRj3zkIx/5yEc+8pGPfOQjH/nIRz7ykY985CMf+chHPvKRj3zkIx/5yEc+8pGPfOQjH/nIRz7ykY985CMf+chHPvKRj3zkIx/5yEc+8pGPfOQjH/nIRz7ykY985CMf+chHPvKRj3zkIx/5yEc+8pGPfOQjH/nIRz7ykY985CMf+chHPvKRj3zkIx/5yEc+8pGPfOSjJEn6dV+PLhnAgI8AAA==
+  </data>
+ </layer>
+ <layer name="BG2" width="82" height="112">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3buW4TQQCA4a2oV44DSTgKzoKz5C44C86Su+AsOF+F+yVIwS0O5QVww5WQwBuQGmInIP7IBdHKxtnN7rJe/yP9RaR15P2kyex44iDIdgyHzdK6Lsv3UORRC5uldV2W76HIYzJsltZ1Wb4HHXXUUUcdddRRRx111FFHHXXUUUcdddRRx05jJCy346tKELymN/S20vm1t7nmDt2le3SfHtDDSm87jnP/E/SVvs3D8THXPKGn9Iye0wt62cOOs+dMde6/QdM0U/l7/tSu91zzgT7SJ/pMozT2j9dGHYfDcjnWcirqWCuZY15FHSfD3lqv0xxlX2d01FFHHXXUUcdyOK7k2lW0mtbQWloX6hj3HvZw7V7aR/vpAB3Use09tNsfn6cLdJEu0WW6Enbei89tJPJzmR1rOe65y+yY9767TJ+bRT/fKvMzQ16fm+nYfffQS+u1jums1zo6r8u6Xpd5P9NpHo9Wg2CMvtA4TVR1THIPP3D7SVNUp4aO85rX0Rb3B8ESGqBBGuqPt6f2/Nrz6ziOnl933zOHn+PqqKOOOuqoY3LHkVBHHXUss2OSvbPn1633vZ5fL9zR8+vi/30swrOXjjrqqKOOOuqoo446FsGx1b43i6LD8+vk59dzh+fX6eyhPb9ONlrNcx3jj1bzXEfX66zvIc7/peoYb/7q6Lwu2n6mF9brJI7rec0G2kibaDNtCXt7vU7ieIjXHKYjdJSO0fHQed1u/rXrKl2j63SDbtKtmHtuz689v+7k6Pl1sddrn3t01FFHHXXUsTsc/b9mHXXMxzHP82u/f+33rzs5+v3r7nvm8PuFOuqoo4466pjOmOoLgjo1aJpm6Bf97kvfscxjoBoEgzRES2kZLacVVR3jjK14baPttIN20i7a3aWOjxb9n07gdZJO0Wk6Q2fpXHXhv3vWMe/7eWep9N3MzCzD/gA+o1C2gI8AAA==
+  </data>
+ </layer>
+ <layer name="FG1" width="82" height="112">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3BMQEAAADCoPVPbQo/oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G9NfvyugI8AAA==
+  </data>
+ </layer>
+ <layer name="FG2" width="82" height="112">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3BMQEAAADCoPVPbQo/oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G9NfvyugI8AAA==
+  </data>
+ </layer>
+ <layer name="TransFG" width="82" height="112">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3BMQEAAADCoPVPbQo/oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4G9NfvyugI8AAA==
+  </data>
+ </layer>
+ <layer name="Info" width="82" height="112">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3bSw7CIBAAUA/gGfCu9RRu8aIuXFiNPyqlODyS2RgT2hdgSgamtNtNokqs2b7tY81nWfs9OXLkyJEjR44cOXLkyJEjR44cOXLkyDGS4/5wjaXPcv7iP6c0tmOtxpFjL4453RxziufYsmY3H48t6nkc43331GwjrI8cOXLkyJEjR44cOZb2kRPHWn0c033883nZLR0jnTve0jE3XDMjOT7O45ZNvuZYmq9z4lgjXxuP5nXUfB35O7zlPLa/5tiLo/q1uitH6yNHjhw5cuTI8fX3CEeOHGM5ql/XG4/qrhxHWR9bvydHjhw5cuTIkSNHjqM7zvfu6tef49X58nf9c1y+h1a//m1Oz3/jWN6enWvjKF+v2Ufp+XKOZfOXo3nd03f4KPm6xX5mhHxtf13XMbtfWG08qrtytD5y5MiRI0eOHHtxdK6ZI8dYju5fuzfM0b04jhw5cuTIkeM27RSsjsaRI8ftHIUQQgjRd1wA8xuRT4CPAAA=
+  </data>
+ </layer>
+ <layer name="Sprites" width="82" height="112">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAC/+3cvQ2CQACAUVdwgqtcwBFcQkQ30C00MVpb6gaOZaszKIkkQEIURAHzXgXkqssV9/E3CgMAAAAAAKBjju7f50wz8xE9jsfP81nmepw5nps/AAD42MG+mhIXa+Pvuzv1qrt31gIA0DNn+xf+yM16htY7ehuqdTQAAFDfKrQzDpp0su4qdXci6e6J98Z/KphPAGiN59kANNHRqWJH74OOhrp8QwMAFC1DO+OA7nZ3Snfnrc0HAACAjn6jozf6EQAAgB4Yhnz/RoXvn+PC+9qLkvF1deU/4GnHX/U8AABfcAcY0LgMgI8AAA==
+  </data>
+ </layer>
+</map>

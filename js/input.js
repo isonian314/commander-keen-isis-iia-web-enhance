@@ -11,6 +11,7 @@ const ACTIONS = [
   ['dbgStats', 'Debug: statistics'], ['dbgColour', 'Debug: statistics colour'], ['dbgHidden', 'Debug: hidden areas'],
   ['dbgJump', 'Debug: jump cheat'], ['dbgKeys', 'Debug: all keys'], ['dbgLives', 'Debug: lives & health'],
   ['dbgWeapons', 'Debug: all weapons'], ['dbgInventory', 'Debug: full inventory'], ['dbgMessage', 'Debug: message'],
+  ['dbgNext', 'Debug: warp to next level'], ['dbgPrev', 'Debug: warp to previous level'],
 ];
 
 const DEFAULT_BINDINGS = {
@@ -19,7 +20,7 @@ const DEFAULT_BINDINGS = {
   w1: ['Digit1'], w2: ['Digit2'], w3: ['Digit3'], w4: ['Digit4'], w5: ['Digit5'], w6: ['Digit6'], w7: ['Digit7'], w8: ['Digit8'],
   inv1: ['F1'], inv2: ['F2'], inv3: ['F3'], inv4: ['F4'],
   dbgStats: ['KeyS'], dbgColour: ['KeyC'], dbgHidden: ['KeyH'], dbgJump: ['KeyJ'], dbgKeys: ['KeyK'], dbgLives: ['KeyL'],
-  dbgWeapons: ['KeyW'], dbgInventory: ['KeyI'], dbgMessage: ['KeyM'],
+  dbgWeapons: ['KeyW'], dbgInventory: ['KeyI'], dbgMessage: ['KeyM'], dbgNext: ['KeyN'], dbgPrev: ['KeyB'],
 };
 
 // Fixed keys (not remappable): Escape = back/quit, Enter = select, F1 also opens Help in the menu

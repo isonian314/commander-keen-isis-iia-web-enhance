@@ -31,7 +31,8 @@ const ENEMY_SPAWN = new Map([
     SPRITE_BIGFROG, SPRITE_DRAGONFLY, SPRITE_BIRD, SPRITE_FOOG_WARRIOR, SPRITE_ISONIAN_GIANT1, SPRITE_ISONIAN_GIANT2,
     SPRITE_ISONIAN_FLY, SPRITE_YORPY, SPRITE_GARG].map((id) => [id, EnemyWalker]),
   ...[SPRITE_SPIDER, SPRITE_DEMON, SPRITE_RAT, SPRITE_LEMMING, SPRITE_TRUCKGUY1_WALK, SPRITE_TRUCKGUY2_WALK,
-    SPRITE_ROBOT_GREY, SPRITE_ROBOT_RED, SPRITE_ROBOT_FLASHER, SPRITE_ROBOT_HOVER, SPRITE_SLUG].map((id) => [id, EnemyShooter]),
+    SPRITE_ROBOT_GREY, SPRITE_ROBOT_RED, SPRITE_ROBOT_FLASHER, SPRITE_ROBOT_HOVER, SPRITE_SLUG, SPRITE_ROBO_GREY, SPRITE_ROBO_BLUE,
+    SPRITE_DEVIL].map((id) => [id, EnemyShooter]),
   ...[SPRITE_ROCK_GREY, SPRITE_ROCK_MOSS, SPRITE_ROCK_BROWN].map((id) => [id, EnemyRock]),
   ...[SPRITE_ISONIAN_GREEN, SPRITE_ISONIAN_RED, SPRITE_ISONIAN_WHITE].map((id) => [id, EnemyIsonian]),
   [SPRITE_TELETURRET, EnemyTeleTurret],
@@ -152,7 +153,7 @@ class Level {
         if (testInfo !== 0) {
           if (testInfo in INFO_MASKS) {
             this.sprite_MaskAll.add(new MaskTile(x, y, INFO_MASKS[testInfo]));
-          } else if (testInfo >= INFO_EXIT_1 && testInfo <= INFO_EXIT_1 + 10) {
+          } else if (testInfo >= INFO_EXIT_1 && testInfo <= INFO_EXIT_1 + 15) {
             this.sprite_Exits.add(new ExitTile(x, y, testInfo - INFO_EXIT_1 + 1));
           } else if ((testInfo >= INFO_DOOR_1 && testInfo <= INFO_DOOR_1 + 15) || (testInfo >= INFO_TELE_1 && testInfo <= INFO_TELE_1 + 15)) {
             // Doors and teleporters share the list; ids are offset from the first door id

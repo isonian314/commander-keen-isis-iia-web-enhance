@@ -14,6 +14,11 @@ async function parseTMX(text) {
   const doc = new DOMParser().parseFromString(text, 'application/xml');
   if (doc.getElementsByTagName('parsererror').length) throw new Error('Invalid TMX file');
   const out = { width: 0, height: 0, layers: {} };
+  // INFO and SPRITE ids follow the graphics tiles, so files made against a smaller tiles.png use lower firstgids
+  const firstgid = {};
+  for (const ts of doc.getElementsByTagName('tileset')) firstgid[ts.getAttribute('name')] = parseInt(ts.getAttribute('firstgid'), 10);
+  const info0 = firstgid.tiles_info || MAXTILES + 1, sprite0 = firstgid.tiles_sprites || MAXTILES + MAXINFO + 1;
+  const remap = (v) => (v >= sprite0 ? v - sprite0 + MAXTILES + MAXINFO + 1 : v >= info0 ? v - info0 + MAXTILES + 1 : v);
   for (const layer of doc.getElementsByTagName('layer')) {
     const key = TMX_LAYERS[layer.getAttribute('name')];
     if (!key) continue;
@@ -35,6 +40,7 @@ async function parseTMX(text) {
     } else {
       throw new Error('Unsupported TMX layer encoding (use base64 or csv)');
     }
+    for (let i = 0; i < values.length; i++) if (values[i]) values[i] = remap(values[i]);
     out.layers[key] = values;
   }
   for (const k of Object.values(TMX_LAYERS)) {
