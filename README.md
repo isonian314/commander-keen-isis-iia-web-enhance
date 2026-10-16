@@ -8,7 +8,11 @@
 
 This repo contains a vanilla Javascript port of the Python3 version of "Mystery of Isis IIa". It is a faithful recreation of the original, designed so that anyone can play it on the web without having to download the otherwise required Python dependencies.
 
-The original repo (with source code for the Python versions) can be found [here](https://github.com/isonian314/commander-keen-isis-iia-1.1). 
+**NB** - there are now (as of late 2026) three repos representing different variants of this game:
+
+1. The original repo (with source code for the Python versions) can be found [here](https://github.com/isonian314/commander-keen-isis-iia-1.1). 
+2. The online playable Javascript web-port of the original can be found [here](https://github.com/isonian314/commander-keen-isis-iia-web).
+3. The enhanced (full skeleton of 16-levels, skeleton world map navigation) *is this repo*. 
 
 # Full game documentation (new)
 
