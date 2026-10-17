@@ -97,12 +97,23 @@ Legend: **[x]** done · **[~]** done with a placeholder (works end to end, but n
 - [ ] Epilogue: Mort shifting back to a tree; viewscreen with an SGA "INCOMING TRANSMISSION" jagged wave.
 - [ ] Doc level 1–7 pre-level animations are single frames today (optional: animate them).
 
-### Parallax backgrounds (currently reused)
-- [ ] Barracks: missile tower visible in the background (uses `bg6.png`, icy spires).
-- [ ] Missile Tower: cloudy mountains, optionally a cloud effect above a certain height (uses `bg1.png` + cloud weather sprites).
-- [ ] Ocean: underwater background (uses `bg5.png`).
-- [ ] Secret level: Keen 4 style background (uses `bg1.png`).
-- [ ] Castle levels and rooftop: "garden rainbows" (`bg7.png`) is used as the doc asks; the castle interior could use its own.
+### Parallax backgrounds
+New sheets are 640×480, same as `bg0.png`–`bg7.png`. Sprite ids stay `S20+n` for `n = 0…12` (`S(33–38)` are doors); `bg13` is `S(49)`.
+
+Style of the existing set (keep this): soft airbrushed / painted, limited palette, dithered gradients, simple large silhouettes, no characters, no text, no UI. Horizon in the lower third so it reads behind platforms.
+
+- [x] Barracks (`bg8.png`, `S28`) — missile tower on the horizon. Style ref: `bg6.png`.
+  Prompt: 640×480 parallax background for a 1990s Commander Keen fangame, matching the soft airbrushed painted style of the attached reference (teal-to-white sky, simple landmark silhouette, dithered gradients, limited palette). A tall white-and-grey Isonian missile tower / launch gantry stands on the distant plain, one dominant vertical structure like the reference's ice spire but clearly a military launch tower with a dark missile on the pad. Pale teal sky, soft haze, a low simple ridge in the foreground. No characters, text, UI, or frames.
+- [x] Missile Tower (`bg9.png`, `S29`) — cloudy mountains from high up. Style ref: `bg1.png`.
+  Prompt: 640×480 parallax background for a 1990s Commander Keen fangame, matching the soft airbrushed painted style of the attached reference (pale blue sky, huge soft white cloud masses, dark mountain ridge, simple green foreground hill, dithered gradients). View from a high tower: more sky than land, layered cloudy mountains, a small green or grey ridge along the bottom. No characters, text, UI, or frames.
+- [x] Ocean (`bg10.png`, `S30`) — underwater. Style ref: `bg5.png`.
+  Prompt: 640×480 parallax background for a 1990s Commander Keen fangame, matching the soft airbrushed painted style of the attached reference (deep blue atmosphere, a single bright glow, dark mountain silhouettes, heavy dithering). Recast as underwater: murky blue-green water, shafts of light from a bright surface glow like the reference's orb, distant dark seamount silhouettes fading into gloom. No fish, characters, text, UI, or frames.
+- [x] Secret Island (`bg11.png`, `S31`) — Keen 4 Shadowlands outdoor. Style ref: `bg1.png`.
+  Prompt: 640×480 parallax background for a 1990s Commander Keen fangame, matching the soft airbrushed painted style of the attached reference (blue sky, soft white clouds, dark mountain, simple green hill). Translate classic Keen 4 Shadowlands outdoor into that style: brighter cyan sky, a pale yellow sun, simple puffy clouds, rolling green hills in two or three flat layers. Cheerful and saturated, still painted not pixel-art. No characters, text, UI, or frames.
+- [x] Imperial Castle interior (`bg12.png`, `S32`) — dark stone hall. Style ref: `bg3.png`.
+  Prompt: 640×480 parallax background for a 1990s Commander Keen fangame, matching the soft airbrushed painted style of the attached reference (near-black interior, simple rounded 3D forms, faint grey highlights, heavy dithering). Recast the stalagmite shapes as a dark castle hall: tall stone arches or columns receding into darkness, a faint cool glow from a distant window or doorway. No characters, furniture close-up, text, UI, or frames.
+- [x] Rooftop Showdown (`bg13.png`, `S49`) — dusk over the garden islands. Style ref: `bg7.png`. Castle Garden keeps `bg7.png` (garden rainbows) as the design doc asks.
+  Prompt: 640×480 parallax background for a 1990s Commander Keen fangame, matching the soft airbrushed painted style of the attached reference (layered grey-violet mountains, a thin waterfall, palm-tree silhouette along the bottom, a simple rainbow). Recast as dusk from a castle roof: evening violet-orange sky, the same mountain and palm language, rainbow still faintly visible, more dramatic twilight. No characters, battlements in the foreground, text, UI, or frames.
 
 ### Tiles (closest existing tiles used for now)
 - [ ] Barracks: beds, bathrooms, windows, concrete walls (uses the white/blue underground-base tiles and pipes).

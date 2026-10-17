@@ -20,7 +20,8 @@ const LEVEL_NAMES = ['Jungle', 'Jungle Nights', 'Mountain', 'Cave', 'Minefield',
   'Central Command', 'Dungeon', 'Barracks', 'Missile Tower', 'Ocean Moat', 'Secret Island', 'Castle Garden',
   'Imperial Castle', 'Rooftop Showdown'];
 
-const BACKGROUNDS = ['bg0.png', 'bg1.png', 'bg2.png', 'bg3.png', 'bg4.png', 'bg5.png', 'bg6.png', 'bg7.png'];
+const BACKGROUNDS = ['bg0.png', 'bg1.png', 'bg2.png', 'bg3.png', 'bg4.png', 'bg5.png', 'bg6.png', 'bg7.png',
+  'bg8.png', 'bg9.png', 'bg10.png', 'bg11.png', 'bg12.png', 'bg13.png'];
 
 // ---------------------------------------------------------------------------------------------
 // Save data: one record per level slot (16), stored in localStorage

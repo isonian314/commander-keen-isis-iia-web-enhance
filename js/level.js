@@ -223,7 +223,8 @@ class Level {
     else if (s === SPRITE_HEALTH2) keen.health -= 2;
     else if (s === SPRITE_HEALTH5) keen.health -= 5;
     else if (s === SPRITE_EGA) keen.sprite = kSPRITE_EGA;
-    else if (s >= SPRITE_BG && s < SPRITE_BG + 10) this.background_ID = s - SPRITE_BG;
+    else if (s >= SPRITE_BG && s < SPRITE_DOOR_RED) this.background_ID = s - SPRITE_BG;
+    else if (s === SPRITE_BG13) this.background_ID = 13;
     else if (s >= SPRITE_MUSIC && s < SPRITE_MUSIC + 10) this.music_ID = s - SPRITE_MUSIC;
     else if (s === SPRITE_NIGHT) this.night = true;
     else if (s === SPRITE_RAIN || s === SPRITE_SNOW) {

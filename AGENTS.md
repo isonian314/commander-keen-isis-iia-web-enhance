@@ -121,7 +121,7 @@ Global ids:
 | Two-way door | INFO pair **2 rows above the floor**, odd id on the left, even on the right (`I97/98` = door 1, `I99/100` = door 2, …). Same pair at both ends; first scan (`x` outer, `y` inner) is end 1. |
 | Exit | Column of `I129+n` (`n` = exit id − 1). Exit **id** is the **next `level_ID`**, not “this level’s number”. |
 | Enemy | Sprite at about `floor − height_in_tiles`; they fall. Optional `I35`/`I36` on the sprite cell for facing. Put `I34` (enemy-solid) at ledge ends so walkers don't walk off. |
-| Background | `S20+n` anywhere (`n` = 0…7 → `bgN.png`). |
+| Background | `S20+n` anywhere (`n` = 0…12 → `bgN.png`). `S49` is `bg13.png` (`S33–38` are doors). |
 | Music override | `S39+n`. Default per-level track is `LEVEL_MUSIC` in `js/main.js`. |
 | Weather | `S191` night, `S210` rain, `S211` snow, `S212` cloud, `S213` lightning. Height of the sprite matters. |
 | EGA Keen | `S5` (secret level). |

@@ -47,7 +47,7 @@ I_WATER, I_LAVA, I_DOOR, I_EXIT = 82, 84, 97, 128
 KEEN_R, KEEN_L, KEEN_R_WATER, EGA, CHECKPOINT = 1, 2, 3, 5, 50
 KEYS = dict(red=14, yellow=15, green=16, cyan=17, blue=18, magenta=19)
 DOOR_SPRITE = 33 - 14
-BG, CLOUD = 20, 212
+BG, BG13, CLOUD = 20, 49, 212
 JB = [71, 72, 73, 74, 75, 76]
 COLA, BURGER, GINGER, SUGAR, CEREAL = 91, 92, 93, 94, 95
 PYAPA, PEETA, ISIS_FRUIT, NEPHTHYS, POTION, ONEUP = 128, 129, 130, 131, 132, 133
@@ -229,7 +229,7 @@ class Level:
         self.L = {n: [[0] * w for _ in range(h)] for n in LAYERS}
         self.pole_style = POLES[pole]
         self.no_block = set()
-        self.sprite(0, 0, BG + bg)
+        self.sprite(0, 0, BG13 if bg == 13 else BG + bg)
 
     # --- terrain -----------------------------------------------------------------------------------
     def rect(self, x0, y0, x1, y1, kind=SOLID, kit=None):
@@ -696,7 +696,7 @@ class Level:
 # the way out on the ground floor. A side door leads up onto the roof for a bonus.
 # =====================================================================================================
 def level10():
-    lv = Level(150, 46, "white", 6, pole="white")
+    lv = Level(150, 46, "white", 8, pole="white")
     G = 40
     lv.ground(0, 149, G)
     lv.bgwall(22, 14, 128, G - 1, "blue")
@@ -739,7 +739,7 @@ def level10():
 # =====================================================================================================
 def level11():
     W, H, G = 82, 112, 106
-    lv = Level(W, H, "white", 1, pole="white")
+    lv = Level(W, H, "white", 9, pole="white")
     lv.ground(0, W - 1, G, "mountain")
     lv.sprite(1, 30, CLOUD).sprite(2, 70, CLOUD)
     L, R = 24, 57                              # outer walls (2 thick)
@@ -789,7 +789,7 @@ def level11():
 # =====================================================================================================
 def level12():
     W, H = 172, 66
-    lv = Level(W, H, "mountain", 5)
+    lv = Level(W, H, "mountain", 10)
     WT, SEA = 8, 44                            # water surface row, sea floor
     lv.fill_water(1, WT, W - 2, H - 2)
     lv.ground(0, W - 1, SEA)
@@ -832,7 +832,7 @@ def level12():
 # =====================================================================================================
 def level13():
     W, H, G = 124, 42, 34
-    lv = Level(W, H, "jungle", 1)
+    lv = Level(W, H, "jungle", 11)
     lv.sprite(1, 1, EGA)
     lv.ground(0, W - 1, G)
     lv.solid(18, 31, 28, G).solid(32, 28, 38, G)
@@ -910,7 +910,7 @@ def level14():
 def level15():
     W, H = 140, 58
     F1, F2, F3, F4 = 52, 40, 28, 16
-    lv = Level(W, H, "dungeon", 7)
+    lv = Level(W, H, "dungeon", 12)
     lv.ground(0, 12, F1, "garden")
     lv.ground(13, W - 1, F1)
     lv.bgwall(15, F4 + 2, W - 2, F1 - 1, "stone")
@@ -956,7 +956,7 @@ def level15():
 def level16():
     W, H, G = 124, 40, 34
     L = 12                                   # start perch floor (high above the rooftop)
-    lv = Level(W, H, "dungeon", 7)
+    lv = Level(W, H, "dungeon", 13)
     lv.ground(0, W - 1, G)
     for x in range(1, W - 1, 6):
         lv.solid(x, G - 2, x + 1, G - 1)

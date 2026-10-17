@@ -46,7 +46,7 @@
  </layer>
  <layer name="Sprites" width="124" height="40">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAC/+3ZMRGAMAwAQCygoAJQBEjADAMzWAQHLO3OQDig/0vuuiS5LrmkSw0AAAAAQVq7l6od/h8AAAAAAOA2c7r29heLWxPwEVOqIycAQLG+dBbpc11DjmNQndtD/e9mPgAAACDYCQMcejSATQAA
+   H4sIAAAAAAAC/+3ZMRGAMAwAQCygoFqQAUjADAMzWAQHLO3OQDig/0vuuiS5LrmkSw0AAAAAQVq7l6od/h8AAAAAAOA2c7r29heLWxPwEVOqIycAQLG+dBbpc11DjmNQndtD/e9mPgAAACDYCeCfNfuATQAA
   </data>
  </layer>
 </map>

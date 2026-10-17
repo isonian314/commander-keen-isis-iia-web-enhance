@@ -54,8 +54,10 @@ def render(path, out, show_info=False, scale=1.0, background=True, info_alpha=11
     bg_id = 0
     for row in L["Sprites"]:
         for v in row:
-            if tmxlib.sprite(20) <= v < tmxlib.sprite(30):
+            if tmxlib.sprite(20) <= v < tmxlib.sprite(33):
                 bg_id = v - tmxlib.sprite(20)
+            elif v == tmxlib.sprite(49):
+                bg_id = 13
     if background:
         img = Image.open(RES / "backgrounds" / f"bg{bg_id}.png").convert("RGBA").resize((w * 16, h * 16))
     else:
