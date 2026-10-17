@@ -6,16 +6,38 @@
 
 Run `python3 tools/build_assets.py` afterwards so the game picks the levels up.
 
-Levels are described on a logical grid (solid / one-way / water / lava / pole cells). Graphics are filled in from a tile
-"kit" per theme: the `top` tile goes in the row above a walkable surface, `surf` on the surface row and `fill` below it.
-Coordinates are tiles; rectangles are inclusive. `floor` arguments are the row of the solid ground something stands on.
+Levels are described on a logical grid (solid / one-way / water / lava / pole cells). Coordinates are tiles; rectangles
+are inclusive. `floor` arguments are the row of the solid ground something stands on.
+
+Graphics are built in passes, each one stacking on (or overwriting) the previous: background walls, terrain (kit blocks
+with their edges), water/lava, poles, then explicit graphics (doors, props, signs). Terrain follows the original levels:
+the block's left face is drawn on FG1 (one column outside the INFO solid, plus the edge column), its right face on BG2 one
+column outside, one-way platforms are a two-row block on BG2. Anything later drawn on BG2 over a floor's top lip pushes the
+lip down to BG1, so the ground runs continuously behind props and poles.
 """
+import random
 import sys
+from functools import lru_cache
 
 import tmxlib
 from tmxlib import LAYERS, info, sprite, tile
 
 T = lambda c, r: tile(c, r)
+
+
+@lru_cache(maxsize=None)
+def _sheet():
+    from PIL import Image
+    return Image.open(tmxlib.ROOT / "resources" / "tiles" / "tiles.png").convert("RGB")
+
+
+@lru_cache(maxsize=None)
+def blank(gid):
+    """True if graphics tile gid is entirely colour-key green (so placing it would only erase what is underneath)."""
+    im, i = _sheet(), gid - 1
+    x0, y0 = (i % tmxlib.TILES_PER_ROW) * 16, (i // tmxlib.TILES_PER_ROW) * 16
+    px = im.crop((x0, y0, x0 + 16, y0 + 16)).getdata()
+    return all(abs(r - 129) < 8 and abs(g - 255) < 4 and abs(b - 44) < 8 for r, g, b in px)
 EMPTY, SOLID, ONEWAY = 0, 1, 2
 
 I_SOLID, I_ONEWAY, I_POLE, I_ENEMY_SOLID, I_ENEMY_LEFT, I_ENEMY_RIGHT = 2, 3, 25, 34, 35, 36
@@ -46,21 +68,39 @@ HEIGHT = {FOOG: 2, SPIDER: 2, FROG: 2, DEMON: 3, URCHIN: 2, RAT: 2, LEMMING: 3, 
 
 
 class Kit:
-    def __init__(self, top, surf, fill, fill_alt=None):
-        self.top, self.surf, self.fill = T(*top), T(*surf), T(*fill)
-        self.fill_alt = T(*fill_alt) if fill_alt else self.fill
+    """Platform kit. Every theme on tiles.png repeats the jungle block layout relative to its top row r0 (mountain and cave
+    sit one column further left: shift=1). Columns/rows of the block, as used by the original levels:
+
+              10       11         12        13          14
+        +0             top-left   top       top-right
+        +1    sliver   surface    surface*  face
+        +2    sliver   fill       fill*     step        face (2nd last row)
+        +3    sliver   fill       corner    bottom-R    face (last row)
+
+    (* = used in the right-most solid column). The sliver goes one column left of the INFO solid, the face one column right.
+    Where a block's right face meets a lower floor of the same kit, the step piece (face + that floor's surface) replaces
+    the face and the corner fill goes in the block's column one row down.
+    """
+
+    def __init__(self, r0, shift=0, alt=False):
+        self.r0, self.shift = r0, shift
+        self.top, self.surf, self.fill = self.t(12, 0), self.t(11, 1), self.t(11, 2)
+        self.fill_alt = self.t(11, 3) if alt else self.fill
+
+    def t(self, c, dr):
+        return T(c - self.shift, self.r0 + dr)
 
 
 KITS = {
-    "jungle": Kit((12, 1), (11, 2), (11, 3), (11, 4)),
-    "jungle_dark": Kit((12, 11), (11, 12), (11, 13)),
-    "mountain": Kit((11, 53), (10, 54), (10, 55)),
-    "cave": Kit((11, 65), (10, 66), (10, 67)),
-    "white": Kit((12, 133), (11, 134), (11, 135)),
-    "blue": Kit((12, 115), (11, 116), (11, 117)),
-    "green": Kit((12, 159), (11, 160), (11, 161)),
-    "dungeon": Kit((12, 178), (11, 179), (11, 180)),
-    "garden": Kit((12, 213), (11, 214), (11, 215)),
+    "jungle": Kit(1, alt=True),
+    "jungle_dark": Kit(11),
+    "mountain": Kit(53, 1),
+    "cave": Kit(65, 1),
+    "white": Kit(133),
+    "blue": Kit(115),
+    "green": Kit(159),
+    "dungeon": Kit(178),
+    "garden": Kit(213),
 }
 
 # Background (BG1) wall textures: f(x, y) -> tile
@@ -78,41 +118,116 @@ GFX = {
     "door_base": (24, 149, 4, 3),
     "door_wood": (21, 179, 2, 3),
     "doorway_dark": (24, 179, 2, 3),
-    "plant_pod": (16, 213, 5, 6),
-    "plant_berry": (22, 213, 5, 4),
+    "plant_pod": (16, 214, 5, 5),
+    "plant_berry": (22, 213, 4, 4),
     "plant_flower": (26, 214, 5, 4),
-    "bush_flowers": (16, 222, 6, 4),
     "garden_painting": (22, 218, 6, 6),
     "painting1": (0, 168, 6, 6),
     "painting2": (15, 163, 6, 8),
     "torch_yellow": (16, 193, 3, 5),
-    "torch_blue": (19, 194, 3, 3),
+    "torch_blue": (19, 193, 3, 3),
     "cage": (26, 178, 2, 4),
     "cage_green": (28, 178, 2, 4),
     "cage_blue": (30, 178, 2, 4),
-    "pipes_grey": (1, 129, 6, 3),
-    "pipes_blue": (10, 129, 6, 3),
+    "pipes_grey": (1, 130, 6, 3),
+    "pipes_blue": (10, 130, 6, 3),
     "ship": (16, 148, 7, 3),
     "crane": (16, 151, 7, 7),
-    "lab": (21, 166, 5, 3),
+    "lab": (21, 164, 6, 4),
     "flasks": (21, 169, 8, 1),
-    "monitor": (23, 159, 7, 4),
+    "monitor": (23, 160, 7, 2),
     "log_bridge": (1, 75, 3, 2),
 }
-POLES = {"grey": (T(29, 91), T(29, 92)), "cyan": (T(29, 133), T(29, 133)), "magenta": (T(28, 133), T(28, 133))}
-WATER_SURF, WATER_BODY, LAVA_SURF, LAVA_BODY = T(25, 71), T(25, 72), T(22, 71), T(22, 72)
+# Graphics drawn in front of Keen by default (plants and bushes); everything else defaults to BG2
+FG_GFX = {"plant_pod", "plant_berry", "plant_flower"}
+# Alternative pieces a graphic picks at random per placement: (i, j, w, h) inside the graphic -> top-left [col, row] of
+# the replacement on tiles.png. GFX_HOLES: cells inside the rectangle that belong to a neighbouring piece, never drawn.
+GFX_ALT = {
+    "plant_pod": [((0, 1, 2, 2), (16, 213)), ((0, 4, 4, 1), (16, 219))],   # other leaves; other grass
+}
+
+
+class LILY:
+    """Garden lily pads (two rows: the top sits on the water's surface row, the bottom dips into the water). The primary
+    pad is 4 wide with a berry cluster on its two middle columns; the blank pad stretches to any width (left cap, random
+    middles, right cap) and takes berry clusters on its middle columns."""
+    primary = [(17, 222), (18, 222), (19, 222), (20, 222)]
+    left, mids, right = (10, 222), [(11, 222), (12, 222), (13, 222)], (14, 222)
+    berry_l, berry_r = [(18, 222), (16, 222)], [(19, 222), (21, 222), (21, 223), (21, 224)]
+    berry_pair = [(18, 221), (19, 221)]          # top row only
+    berry_block = [(18, 224), (19, 224)]         # both rows
+
+
+GFX_HOLES = {
+    "plant_pod": [(0, 0), (1, 0)],   # the other leaves, beside the pod's crown
+}
+
+
+class Pole:
+    """body: repeating tile(s) (alternate by row), top/bottom: end caps, hole: 3 tiles drawn on the row above a platform
+    the pole passes through (pole in the middle one). Without a hole the platform's top lip is drawn in front instead."""
+
+    def __init__(self, body, top=None, bottom=None, hole=None):
+        self.body = [T(*b) for b in body]
+        self.top = T(*top) if top else self.body[0]
+        self.bottom = T(*bottom) if bottom else self.body[-1]
+        self.hole = [T(*h) for h in hole] if hole else None
+
+
+POLES = {
+    "cyan": Pole([(31, 88)], (29, 88), (28, 88), [(25, 90), (26, 90), (27, 90)]),          # grey-rimmed hole
+    "cyan_grass": Pole([(31, 88)], (29, 88), (28, 88), [(25, 88), (26, 88), (27, 88)]),    # green-rimmed hole
+    "white": Pole([(31, 88)], (29, 88), (28, 88), [(25, 135), (26, 135), (27, 135)]),      # white-base floor hole
+    "green": Pole([(21, 159)], (21, 158), (21, 160), [(18, 159), (19, 159), (20, 159)]),   # green-base floor hole
+    "vine": Pole([(12, 91), (12, 92)]),
+}
+LAVA_SURF, LAVA_BODY = T(22, 71), T(22, 72)
+
+
+class WATER:
+    """Water block on tiles.png, as laid out in level 6: columns left edge / middle / right edge, rows top (back edge,
+    drawn two rows above the water), surface (row above the water), body, bottom (row below the water)."""
+    left, mid, right = 24, 25, 26
+    top, surf, body, bottom = 70, 71, 72, 73
+    wall_surf = T(28, 71)
+
+
+class SGA:
+    """Standard Galactic Alphabet font. Each glyph fills half a tile: letter k (a=0) is at column col + k % 13, row
+    left + k // 13 (glyph in the left half) or right + k // 13 (right half). plain: blank board for a half with no letter.
+    frame: the board's rim, drawn one tile outside the text (tl, t, tr, l, r, bl, b, br), b_post: bottom with a post,
+    post: post foot standing on the floor."""
+
+    def __init__(self, col, left, right, plain=None, frame=None, b_post=None, post=None):
+        self.col, self.left, self.right = col, left, right
+        self.plain = T(*plain) if plain else None
+        self.frame = {k: T(*v) for k, v in frame.items()} if frame else None
+        self.b_post, self.post = (T(*b_post), T(*post)) if b_post else (None, None)
+
+    def glyph(self, ch, right):
+        k = ord(ch) - 97
+        return T(self.col + k % 13, (self.right if right else self.left) + k // 13)
+
+
+SIGNS = {
+    "wood": SGA(0, 22, 24, plain=(20, 23), b_post=(20, 24), post=(18, 25),
+                frame=dict(tl=(19, 22), t=(20, 22), tr=(21, 22), l=(19, 23), r=(21, 23), bl=(19, 24), b=(17, 24),
+                           br=(21, 24))),
+    "blue": SGA(19, 143, 145),
+}
 
 
 class Level:
-    def __init__(self, w, h, kit, bg, pole="grey"):
+    def __init__(self, w, h, kit, bg, pole="cyan"):
         self.w, self.h, self.kit = w, h, KITS[kit]
         self.grid = [[EMPTY] * w for _ in range(h)]
         self.gkit = [[None] * w for _ in range(h)]
         self.wall = [[None] * w for _ in range(h)]
         self.water, self.lava, self.poles = set(), set(), set()
         self.info_ops, self.ops = {}, []  # explicit INFO cells; explicit graphics (layer, x, y, gid), drawn last
+        self.lilies = {}                  # (x, y) -> gid of lily pad tiles, drawn on BG2 before the water
         self.L = {n: [[0] * w for _ in range(h)] for n in LAYERS}
-        self.pole_tiles = POLES[pole]
+        self.pole_style = POLES[pole]
         self.no_block = set()
         self.sprite(0, 0, BG + bg)
 
@@ -135,6 +250,39 @@ class Level:
 
     def ow(self, x0, x1, y, kit=None):
         return self.rect(x0, y, x1, y, ONEWAY, kit)
+
+    def lily(self, x, y, w=4, berries=0.7, layer=None):
+        """Lily pad w wide (>= 2) floating on the water whose surface row is y + 1 (the bank's surface row: pass the
+        bank's floor - 1); its bottom row lies in the water's surface band and is one-way, so Keen stands level with
+        the bank. Width 4 is the primary pad (always with berries); other widths are a blank pad with a berry cluster
+        on each spare pair of middle columns, at chance `berries`. Variants are random, seeded by position. With
+        `layer` it is a plain decoration on that layer (e.g. on land: y = floor - 2), no INFO."""
+        rng = random.Random(f"lily:{x},{y},{w}")
+        if w == 4:
+            top, slots = list(LILY.primary), [1]
+        else:
+            top = [LILY.left] + [rng.choice(LILY.mids) for _ in range(w - 2)] + [LILY.right]
+            slots = [i for i in range(1, w - 2, 3) if rng.random() < berries]
+        bottom = [(c, r + 1) for c, r in top]
+        if w == 3 and rng.random() < berries:
+            top[1] = rng.choice(LILY.berry_l[1:] + LILY.berry_r[1:])   # the single-tile berries
+        for i in slots:
+            kind = rng.choice(("single", "single", "pair", "block"))
+            if kind == "block":
+                top[i:i + 2] = LILY.berry_block
+                bottom[i:i + 2] = [(c, r + 1) for c, r in LILY.berry_block]
+            elif kind == "pair":
+                top[i:i + 2] = LILY.berry_pair
+            else:
+                top[i:i + 2] = [rng.choice(LILY.berry_l), rng.choice(LILY.berry_r)]
+        for i in range(w):
+            if layer:
+                self.put(layer, x + i, y, T(*top[i])).put(layer, x + i, y + 1, T(*bottom[i]))
+                continue
+            self.lilies[(x + i, y)] = T(*top[i])
+            self.lilies[(x + i, y + 1)] = T(*bottom[i])
+            self.info(x + i, y + 1, I_ONEWAY)
+        return self
 
     def bgwall(self, x0, y0, x1, y1, style):
         for y in range(y0, y1 + 1):
@@ -167,14 +315,21 @@ class Level:
         self.ops.append((layer, x, y, gid))
         return self
 
-    def gfx(self, name, x, y, layer="BG2", flip_rows=False):
+    def gfx(self, name, x, y, layer=None):
+        layer = layer or ("FG1" if name in FG_GFX else "BG2")
         c, r, gw, gh = GFX[name]
-        for j in range(gh):
-            for i in range(gw):
-                self.put(layer, x + i, y + j, T(c + i, r + j))
+        holes = GFX_HOLES.get(name, [])
+        src = {(i, j): (c + i, r + j) for j in range(gh) for i in range(gw) if (i, j) not in holes}
+        rng = random.Random(f"{name}:{x},{y}")
+        for (ai, aj, aw, ah), (ac, ar) in GFX_ALT.get(name, []):
+            if rng.random() < 0.5:
+                src.update({(ai + i, aj + j): (ac + i, ar + j) for j in range(ah) for i in range(aw)})
+        for (i, j), (sc, sr) in src.items():
+            if not blank(T(sc, sr)):
+                self.put(layer, x + i, y + j, T(sc, sr))
         return self
 
-    def gfx_on(self, name, x, floor, layer="BG2"):
+    def gfx_on(self, name, x, floor, layer=None):
         """Graphic standing on the floor (bottom row just above it)."""
         return self.gfx(name, x, floor - GFX[name][3], layer)
 
@@ -248,15 +403,43 @@ class Level:
             self.gfx_on(gfx, x - (gw - width) // 2, floor)
         return self
 
-    def sign(self, x, y, text, layer="BG2"):
-        """Standard Galactic Alphabet sign (1x2 tiles per letter)."""
-        for ch in text.lower():
-            if "a" <= ch <= "z":
-                k = ord(ch) - 97
-                c, r = k % 13, 22 if k < 13 else 24
-                self.put(layer, x, y, T(c, r)).put(layer, x, y + 1, T(c, r + 1))
-            x += 1
+    def sign(self, x, y, text, style="wood", layers=("BG1", "BG2"), frame=None, post=False):
+        """Standard Galactic Alphabet text from (x, y), two letters per tile: the left letter's left-half glyph on
+        layers[0], the right letter's right-half glyph on layers[1]. Lines split on newlines; anything but a-z is a space.
+        A tile with a single letter puts it on layers[1] over the plain board (if the style has one) on layers[0].
+        frame (default: if the style has one) draws the board's rim one tile outside the text on layers[1]; post puts a
+        post under its middle, two rows below the text."""
+        st, (lo, hi) = SIGNS[style], layers
+        lines = text.lower().split("\n")
+        w, h = max((len(s) + 1) // 2 for s in lines), len(lines)
+        letter = lambda ch: "a" <= ch <= "z"
+        for j, line in enumerate(lines):
+            line = line.ljust(2 * w)
+            for i in range(w):
+                a, b = line[2 * i], line[2 * i + 1]
+                if letter(a) and letter(b):
+                    self.put(lo, x + i, y + j, st.glyph(a, False)).put(hi, x + i, y + j, st.glyph(b, True))
+                    continue
+                if st.plain:
+                    self.put(lo, x + i, y + j, st.plain)
+                if letter(a) or letter(b):
+                    self.put(hi, x + i, y + j, st.glyph(a, False) if letter(a) else st.glyph(b, True))
+        if frame or (frame is None and st.frame):
+            f, mid = st.frame, x + (w - 1) // 2
+            self.put(hi, x - 1, y - 1, f["tl"]).put(hi, x + w, y - 1, f["tr"])
+            self.put(hi, x - 1, y + h, f["bl"]).put(hi, x + w, y + h, f["br"])
+            for i in range(w):
+                self.put(hi, x + i, y - 1, f["t"])
+                self.put(hi, x + i, y + h, st.b_post if post and x + i == mid else f["b"])
+            for j in range(h):
+                self.put(hi, x - 1, y + j, f["l"]).put(hi, x + w, y + j, f["r"])
+            if post:
+                self.put(hi, mid, y + h + 1, st.post)
         return self
+
+    def sign_on(self, x, floor, text, style="wood", layers=("BG1", "BG2")):
+        """Framed sign on a post standing on the floor; x is the first text tile."""
+        return self.sign(x, floor - 2 - len(text.split("\n")), text, style, layers, frame=True, post=True)
 
     def stamp(self, src, sx, sy, sw, sh, dx, dy, layers=("BG1", "BG2", "FG1", "FG2")):
         """Copy graphics from another tmx file (path) region."""
@@ -284,43 +467,211 @@ class Level:
     def is_floor(self, x, y):
         return 0 <= x < self.w and 0 <= y < self.h and self.grid[y][x] != EMPTY
 
+    def inside(self, x, y):
+        return 0 <= x < self.w and 0 <= y < self.h
+
+    def crossing(self, x, y):
+        """Pole cell passing through a platform (platform on both sides): drawn as platform, with the pole behind it."""
+        G = self.grid
+        return (x, y) in self.poles and G[y][x] == EMPTY and 0 < x < self.w - 1 \
+            and G[y][x - 1] != EMPTY and G[y][x + 1] != EMPTY
+
+    def terrain_cells(self):
+        """Cells drawn as terrain -> (kit, front). front: solid ground, whose left face goes on FG1. One-way platforms get
+        a second graphics row below them (they are drawn as a thin block)."""
+        G, cells = self.grid, {}
+        for y in range(self.h):
+            for x in range(self.w):
+                if G[y][x] != EMPTY:
+                    cells[(x, y)] = (self.gkit[y][x] or self.kit, G[y][x] == SOLID)
+        for (x, y) in self.poles:
+            if self.crossing(x, y):
+                k, front = cells[(x - 1, y)]
+                cells[(x, y)] = (k, front and cells[(x + 1, y)][1])
+        for (x, y), (k, front) in list(cells.items()):
+            if not front and y + 1 < self.h and (x, y + 1) not in cells and G[y][x] == ONEWAY:
+                cells[(x, y + 1)] = (k, False)
+        return cells
+
     def render(self):
         L, G = self.L, self.grid
+        lip = set()   # cells whose BG2 is a floor's top lip; anything later drawn on BG2 there pushes the lip to BG1
+
+        def bg2(x, y, gid):
+            if (x, y) in lip:
+                L["BG1"][y][x] = L["BG2"][y][x]
+                lip.discard((x, y))
+            L["BG2"][y][x] = gid
+
+        # 1. background walls
         for y in range(self.h):
             for x in range(self.w):
                 if self.wall[y][x]:
                     L["BG1"][y][x] = self.wall[y][x](x, y)
-        for y in range(self.h):
-            for x in range(self.w):
-                g = G[y][x]
-                if g == EMPTY:
-                    continue
-                k = self.gkit[y][x] or self.kit
-                L["Info"][y][x] = info(I_SOLID if g == SOLID else I_ONEWAY)
-                exposed = y == 0 or G[y - 1][x] == EMPTY
-                if exposed:
-                    L["BG2"][y][x] = k.surf
-                    if y > 0 and not L["BG2"][y - 1][x]:
-                        L["BG2"][y - 1][x] = k.top
+
+        # 2. terrain: block body, left face (FG1 for solid ground), right face, then the top lips
+        cells = self.terrain_cells()
+        on = lambda x, y: (x, y) in cells or not self.inside(x, y)   # the map edge counts as solid: no faces there
+        faces, lips, corners, steps = [], [], [], set()
+        for (x, y), (k, front) in sorted(cells.items(), key=lambda c: (c[0][1], c[0][0])):
+            top, bottom = not on(x, y - 1), not on(x, y + 1)
+            left, right = not on(x - 1, y), not on(x + 1, y)
+            if top:
+                t = k.surf if not right or left else k.t(12, 1)
+            elif bottom and right:
+                t = k.t(13, 3)
+            elif right:
+                t = k.t(12, 2)
+            else:
+                t = k.fill if (x // 2 + y // 3) % 3 else k.fill_alt
+            edge = "FG1" if front else "BG2"
+            L[edge if left else "BG2"][y][x] = t
+            if left and x > 0:
+                L[edge][y][x - 1] = k.t(10, 1 if top else 3 if bottom else 2)
+                if front and cells.get((x - 1, y + 1)) == (k, True) and on(x, y + 1):
+                    # inner corner: the left face carries on in front of the lower floor's surface row
+                    corners += [("FG1", x - 1, y + 1, k.t(10, 2)), ("FG1", x, y + 1, k.t(11, 2))]
+            if right and x + 1 < self.w:
+                if cells.get((x + 1, y + 1)) == (k, True):
+                    # inner corner: the face comes down onto a lower floor (step piece: face + that floor's surface)
+                    f = k.t(13, 2)
+                    steps.add((x + 1, y))
+                    if on(x, y + 1) and on(x - 1, y + 1):
+                        corners.append(("BG2", x, y + 1, k.t(12, 3)))
+                elif bottom:
+                    f = k.t(14, 3)
+                elif not on(x, y + 2):
+                    f = k.t(14, 2)       # second-last row: the face tapers off
                 else:
-                    L["BG2"][y][x] = k.fill if (x // 2 + y // 3) % 3 else k.fill_alt
-        for (x, y) in self.water | self.lava:
+                    f = k.t(13, 1)
+                faces.append((x + 1, y, f))
+            if top and y > 0:
+                lips.append((x, y - 1, k.t(11, 0) if left and not right else k.top))
+                if right and x + 1 < self.w and not on(x + 1, y - 1):
+                    lips.append((x + 1, y - 1, k.t(13, 0)))
+        for x, y, f in faces:
+            if not on(x, y):
+                L["BG2"][y][x] = f
+        for layer, x, y, t in corners:
+            L[layer][y][x] = t
+        for x, y, t in lips:
+            if on(x, y) or (x, y) in steps:
+                continue
+            if L["BG2"][y][x]:
+                L["BG1"][y][x] = t       # behind another block's face
+            else:
+                L["BG2"][y][x] = t
+                lip.add((x, y))
+
+        # 3. water: a block like the terrain kits (see WATER). Body and edges on TransFG; the surface row (the row above
+        #    the water) also on BG2, and the top row above that on BG2 only. Half-tile edges: the left one goes one
+        #    column outside the water, the right one in its last column; the bottom edge one row below the water.
+        #    The water's top and surface go behind anything already on BG2 (one-way pads standing in it), except at the
+        #    left bank: its face and lip give way to the water's corner, and the surface's left edge covers the bank's
+        #    last column (bank tile moved to BG1), whether the bank is level with the surface or rises above it. Against a wall rising out of the water on the right, the water runs up to the wall's
+        #    sliver with middle pieces and the half-width surface WATER.wall_surf.
+        #    Lily pads go on BG2 first, so the water's surface lands behind them.
+        for (x, y), gid in self.lilies.items():
+            L["BG2"][y][x] = gid
+        wet = lambda x, y: (x, y) in self.water and self.inside(x, y) and G[y][x] == EMPTY
+
+        def tfg(x, y, gid):
+            if self.inside(x, y):
+                L["TransFG"][y][x] = gid
+
+        def behind(x, y, gid, front=False):
+            if not self.inside(x, y):
+                return
+            if not L["BG2"][y][x]:
+                L["BG2"][y][x] = gid
+            elif front:
+                if (x, y) in cells or not L["BG1"][y][x]:
+                    L["BG1"][y][x] = L["BG2"][y][x]
+                L["BG2"][y][x] = gid
+            elif not L["BG1"][y][x]:
+                L["BG1"][y][x] = gid
+
+        W = WATER
+        for (x, y) in sorted(self.water):
+            if not wet(x, y):
+                continue
+            first, last = not wet(x - 1, y), not wet(x + 1, y)
+            top = y
+            while wet(x, top - 1):
+                top -= 1
+            wall_r = last and on(x + 1, top - 2)
+            col = W.right if last and not wall_r else W.mid
+            rows = [(y, W.body)] + ([(y + 1, W.bottom)] if not wet(x, y + 1) else [])
+            for yy, r in rows:
+                tfg(x, yy, T(col, r))
+                if first:
+                    tfg(x - 1, yy, T(W.left, r))
+            if wet(x, y - 1) or not self.inside(x, y - 1) or G[y - 1][x] != EMPTY:
+                continue
+            tfg(x, y - 1, W.wall_surf if wall_r else T(col, W.surf))
+            behind(x, y - 1, T(col, W.surf), first)
+            if first:
+                tfg(x - 1, y - 1, T(W.left, W.surf))
+                behind(x - 1, y - 1, T(W.left, W.surf), True)
+            behind(x, y - 2, T(W.mid if first else W.right, W.top), first)
+            if last and not wall_r and self.inside(x + 1, y - 2) and (x + 1, y - 2) not in cells:
+                L["BG2" if not L["BG2"][y - 2][x + 1] else "BG1"][y - 2][x + 1] = T(W.right + 1, W.top)
+        for (x, y) in self.lilies:
+            if (x, y + 1) in self.lilies:
+                L["TransFG"][y][x] = 0      # the pad's top floats above the surface; its bottom row stays tinted
+        for (x, y) in self.lava:
             if G[y][x] != EMPTY:
                 continue
-            lava = (x, y) in self.lava
-            L["Info"][y][x] = info(I_LAVA if lava else I_WATER)
-            L["TransFG"][y][x] = LAVA_BODY if lava else WATER_BODY
-            if (x, y - 1) not in self.water and (x, y - 1) not in self.lava and G[y - 1][x] == EMPTY:
-                L["TransFG"][y - 1][x] = LAVA_SURF if lava else WATER_SURF
+            L["TransFG"][y][x] = LAVA_BODY
+            if (x, y - 1) not in self.lava and G[y - 1][x] == EMPTY:
+                L["TransFG"][y - 1][x] = LAVA_SURF
+
+        # 4. poles: behind platforms they pass through (platform moved to FG1, a hole on the row above)
+        P = self.pole_style
+        for (x, y) in sorted(self.poles):
+            body = P.body[y % len(P.body)]
+            if (x, y) in cells and G[y][x] == EMPTY:
+                if not L["FG1"][y][x]:
+                    L["FG1"][y][x] = L["BG2"][y][x]
+                L["BG2"][y][x] = body
+            elif G[y][x] != EMPTY:
+                L["FG1"][y][x] = body
+            elif self.inside(x, y + 1) and (x, y + 1) in cells and self.crossing(x, y + 1):
+                if P.hole:
+                    for i, h in enumerate(P.hole):
+                        L["BG2"][y][x - 1 + i] = h
+                        lip.discard((x - 1 + i, y))
+                else:
+                    L["FG1"][y][x] = L["BG2"][y][x]
+                    lip.discard((x, y))
+                    L["BG2"][y][x] = body
+            else:
+                if (x, y - 1) not in self.poles and not on(x, y - 1):
+                    body = P.top
+                elif (x, y + 1) not in self.poles and not on(x, y + 1):
+                    body = P.bottom
+                bg2(x, y, body)
+
+        # 5. explicit graphics (doors, props, signs, stamps), in the order they were added
+        for layer, x, y, gid in self.ops:
+            if self.inside(x, y):
+                if layer == "BG2":
+                    bg2(x, y, gid)
+                else:
+                    L[layer][y][x] = gid
+
+        # 6. INFO
+        for y in range(self.h):
+            for x in range(self.w):
+                if G[y][x] != EMPTY:
+                    L["Info"][y][x] = info(I_SOLID if G[y][x] == SOLID else I_ONEWAY)
+        for (x, y) in self.water | self.lava:
+            if G[y][x] == EMPTY:
+                L["Info"][y][x] = info(I_LAVA if (x, y) in self.lava else I_WATER)
         for (x, y) in self.poles:
             L["Info"][y][x] = info(I_POLE)
-            layer = "BG2" if G[y][x] == EMPTY else "FG1"
-            L[layer][y][x] = self.pole_tiles[y % 2]
         for (x, y), n in self.info_ops.items():
             L["Info"][y][x] = info(n)
-        for layer, x, y, gid in self.ops:
-            if 0 <= x < self.w and 0 <= y < self.h:
-                L[layer][y][x] = gid
         # Invisible enemy blockers past the end of each walkable ledge
         for y in range(1, self.h - 1):
             for x in range(1, self.w - 1):
@@ -345,14 +696,14 @@ class Level:
 # the way out on the ground floor. A side door leads up onto the roof for a bonus.
 # =====================================================================================================
 def level10():
-    lv = Level(150, 46, "white", 6)
+    lv = Level(150, 46, "white", 6, pole="white")
     G = 40
     lv.ground(0, 149, G)
     lv.bgwall(22, 14, 128, G - 1, "blue")
     lv.solid(20, 12, 130, 13)                 # roof (walkable on top)
     lv.solid(20, 14, 21, G - 5)               # left wall, entrance below
     lv.solid(129, 14, 130, G - 5)             # right wall, exit below
-    lv.sign(3, 30, "barracks", "BG1")
+    lv.sign_on(8, G, "barracks")
     # floor 2 (y=31) with a pole hole at x=40, floor 3 (y=22) with a pole hole at x=100 and a drop at 114..117
     lv.solid(22, 31, 110, 32).clear(40, 31, 40, 32)
     lv.solid(30, 22, 128, 23).clear(100, 22, 100, 23).clear(114, 22, 117, 23)
@@ -367,7 +718,7 @@ def level10():
     lv.beans(64, 90, 9, 2).sprite(92, 10, PULSAR).checkpoint(80, 12)
     # decoration
     lv.gfx_on("pipes_grey", 26, G).gfx_on("pipes_blue", 80, 31).gfx_on("monitor", 44, 22).gfx_on("lab", 60, G)
-    lv.gfx_on("flasks", 61, G - 3)
+    lv.gfx_on("flasks", 52, G)
     # items
     lv.start(3, G)
     lv.beans(24, 36, G - 3).items(48, 56, G - 3, COLA, 4)
@@ -388,7 +739,7 @@ def level10():
 # =====================================================================================================
 def level11():
     W, H, G = 82, 112, 106
-    lv = Level(W, H, "white", 1, pole="cyan")
+    lv = Level(W, H, "white", 1, pole="white")
     lv.ground(0, W - 1, G, "mountain")
     lv.sprite(1, 30, CLOUD).sprite(2, 70, CLOUD)
     L, R = 24, 57                              # outer walls (2 thick)
@@ -448,14 +799,14 @@ def level12():
     lv.solid(52, 3, 55, 22).solid(104, 4, 107, 20).solid(130, 2, 132, 24)
     # island and normal exit
     lv.solid(156, WT - 1, W - 1, H - 1)
-    lv.gfx_on("plant_berry", 158, WT - 1)
+    lv.gfx_on("plant_berry", 157, WT - 1)
     lv.exit(166, WT - 1, 14, height=5)
-    lv.sign(158, 2, "castle")
+    lv.sign_on(162, WT - 1, "castle")
     # secret (everything below the sea floor is flooded; the water set already covers it, carving is enough):
     # a shaft at 96..99 down to the fork corridor; blue pill (left) loops back up, red pill (right) goes down
     lv.clear(96, SEA, 99, 49).clear(60, 50, 139, 55).clear(60, SEA, 63, 49)
     lv.bgwall(60, 50, 139, 55, "lava")
-    lv.sign(76, 50, "take the blue pill").sign(102, 50, "take the red pill")
+    lv.sign(76, 51, "take the blue pill", "blue").sign(102, 51, "take the red pill")
     lv.clear(136, 56, 139, 57).clear(100, 58, 150, 62)
     lv.bgwall(100, 56, 150, 62, "lava")
     for x0 in (114, 126):
@@ -485,7 +836,7 @@ def level13():
     lv.sprite(1, 1, EGA)
     lv.ground(0, W - 1, G)
     lv.solid(18, 31, 28, G).solid(32, 28, 38, G)
-    lv.fill_water(44, G, 54, G + 4)
+    lv.clear(44, G, 54, G).fill_water(44, G + 1, 54, G + 4)
     lv.solid(43, G + 5, 55, H - 1)
     for x0, x1, y in ((58, 62, 30), (64, 68, 26), (58, 62, 22), (66, 70, 18)):
         lv.ow(x0, x1, y, "jungle_dark")
@@ -509,37 +860,45 @@ def level13():
 # Level 14 - Castle Garden: hedges, a pond, garden critters; the green key on the hedge stairs opens the castle gate.
 # =====================================================================================================
 def level14():
-    W, H, G = 152, 46, 38
+    D = 64                                    # the lake stretch; everything from x = 118 on sits D further right
+    W, H, G = 152 + D, 46, 38
     lv = Level(W, H, "garden", 7)
     lv.ground(0, W - 1, G)
     lv.solid(15, 35, 20, G).solid(26, 32, 31, G)
     lv.ow(34, 38, 29).ow(41, 45, 26).ow(34, 38, 23).ow(41, 46, 20)
-    # pond (lily pads are hedge platforms for now)
-    lv.fill_water(52, G, 70, G + 4)
-    lv.ow(56, 58, 36).ow(63, 65, 35)
+    # pond with lily pads
+    lv.clear(52, G, 70, G).fill_water(52, G + 1, 70, G + 4)
+    lv.lily(55, G - 1, 4).lily(62, G - 1, 5)
     # tall hedge with steps
     lv.ow(92, 95, 34).ow(96, 99, 31)
     lv.solid(100, 28, 106, G)
     lv.solid(112, 34, 116, G)
+    # the lake: large pool before the castle, crossed on lily pads (gaps of 3)
+    lv.clear(124, G, 170, G).fill_water(124, G + 1, 170, H - 2)
+    for x, w in ((127, 4), (134, 6), (143, 3), (149, 9), (161, 4), (167, 3)):
+        lv.lily(x, G - 1, w)
     # the castle: stone facade, gate (green door) and the entrance hall with the exit
-    lv.bgwall(128, 12, W - 2, G - 1, "stone")
-    lv.solid(128, 8, W - 1, 11, "dungeon")
-    for x in range(128, W - 1, 4):
+    C = 128 + D
+    lv.bgwall(C, 12, W - 2, G - 1, "stone")
+    lv.solid(C, 8, W - 1, 11, "dungeon")
+    for x in range(C, W - 1, 4):
         lv.solid(x, 6, x + 1, 7, "dungeon")
-    lv.solid(128, 12, 129, G - 4, "dungeon").lock(128, G, "green")
-    lv.ground(128, W - 1, G, "dungeon")
-    lv.exit(145, G, 15, gfx="doorway_dark")
-    lv.gfx_on("torch_yellow", 134, G - 2).gfx_on("torch_yellow", 140, G - 2)
+    lv.solid(C, 12, C + 1, G - 4, "dungeon").lock(C, G, "green")
+    lv.ground(C, W - 1, G, "dungeon")
+    lv.exit(145 + D, G, 15, gfx="doorway_dark")
+    lv.gfx_on("torch_yellow", 134 + D, G - 2).gfx_on("torch_yellow", 140 + D, G - 2)
     # decoration
-    lv.gfx_on("plant_pod", 6, G).gfx_on("plant_berry", 76, G).gfx_on("plant_flower", 120, G)
-    lv.gfx_on("bush_flowers", 84, G).gfx_on("plant_flower", 44, G).gfx_on("plant_pod", 107, 28)
+    lv.gfx_on("plant_berry", 76, G).gfx_on("plant_flower", 120 + D, G)
+    lv.lily(84, G - 2, 4, layer="FG1").gfx_on("plant_flower", 44, G)
+    for x in (6, 21, 32, 71, 88, 107, 118, 175):
+        lv.gfx_on("plant_pod", x, G)
     # items and enemies
     lv.start(3, G)
     lv.key(43, 20, "green")
     lv.beans(16, 20, 32).beans(26, 31, 29).beans(34, 38, 26).items(41, 45, 23, PEETA, 2)
-    lv.arc(54, 33, 8).items(100, 106, 25, ISIS_FRUIT, 3).beans(112, 116, 31).sprite(124, G - 3, POTION)
-    lv.enemy(24, G, FROG).enemy(60, G + 3, FROG_SWIM).enemy(80, G, CATERPILLAR).enemy(90, G, SNAIL)
-    lv.enemy(103, 28, FOOG_WARRIOR).enemy(120, G, FOOG_WARRIOR, -1).enemy(36, G, SNAIL)
+    lv.arc(54, 33, 8).items(100, 106, 25, ISIS_FRUIT, 3).beans(112, 116, 31).sprite(124 + D, G - 3, POTION)
+    lv.enemy(24, G, FROG).enemy(60, G + 4, FROG_SWIM).enemy(80, G, CATERPILLAR).enemy(90, G, SNAIL)
+    lv.enemy(103, 28, FOOG_WARRIOR).enemy(120 + D, G, FOOG_WARRIOR, -1).enemy(36, G, SNAIL)
     lv.flyer(70, 24, BIRD).flyer(40, 12, DRAGONFLY).flyer(110, 18, DRAGONFLY)
     return lv.save("level14-castle_garden.tmx")
 
@@ -606,7 +965,7 @@ def level16():
     lv.bgwall(56, 4, 57, G - 1, "stone").solid(56, 1, 57, 3)
     lv.gfx_on("door_wood", 52, G)
     lv.exit(52, G, 16, height=4)
-    lv.sign(39, G - 9, "three one four")
+    lv.sign(45, G - 8, "three one four")
     # arena 2
     lv.ow(70, 75, G - 5).ow(84, 89, G - 8).ow(98, 103, G - 5)
     lv.exit(118, G, 1, gfx="doorway_dark")

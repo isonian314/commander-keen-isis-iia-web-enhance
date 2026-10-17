@@ -16,17 +16,17 @@
  </layer>
  <layer name="BG1" width="124" height="40">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAC/+3WQQ2AQAxFwbrYBafgZHECTsAJnKgMSGck9KfJiwAA+Ja7RTzNHaqYesTc3aGKJX979d9ljNx6s3cZe2592LuMM7e+7K3P0efoc/Q5+hx9jj5Hn6PP0efoc/S5Pkefo8/R5+hz9Dn6HH2OPkefo8/R5wAAwE+9bjklHIBNAAA=
+   H4sIAAAAAAAC/+3WwQnCQBBA0SFFmGhPFqSdaCdagD3EoyDagAc9OaCCF/Fo4rwHSy57yO6w8CMAAIbl2kbcWvdQxbSLmHXuoYpFvu2l913GKme9Nu8yNjnrrXmX0ees9+atz9Hn6HP0OfocfY4+R5+jz9Hn6HP0uT5Hn6PP0ef82KmJOOa65Do8v7tc50af63N9rs/R5+hz9DlDps//23zyWN/6/LXvfe8Yz/np/8d8NgAAqOIOnNGPxYBNAAA=
   </data>
  </layer>
  <layer name="BG2" width="124" height="40">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAC/+2bQUrDQBSGxxlETzBkqyC6Vc+RhXqNbFRQ9AzdqKDoLVRQdK94EcVj+JdZtCmVqQ22yev3wU+YEJJ574NJFhnnbFLGesA2VawHbNOL9QC+wZ5vwDfgG/AN+AZ8A74B34BvwDfgG/AN+MY34BvwDfgGfAO+Ad+A78Vh9P//SfYBrATnPrxzyzq++ZQ+XuOlMBi/+3RuNaRr5+l7mjotMvr//yT7ADbl7lsuN3T89Cl91jVeC4Pxl0/ntkK6dp6+p6kTWM8trM+zvH9T37Nel9v+Hvjvdavp/XO+twvndpTdoh3r8l+fl5s/1NlTn/aVg2Lx5m/pG/JEdZzGfF2H6tORctxR37n5n6nu81/6YOkb8lp13MR8XRfq06Vy1VHfufnfqu67MX0oh/ZQlgbypDzHfF336tOD8lh0s87c/F+U1zF9qIbGlbFYratJH3qEEEIIIaTV+QHt2kplgE0AAA==
+   H4sIAAAAAAAC/+2bQUrDQBSGhxbBtciQrYIX8BzWRa9hK6ig6BlaiwotegVRUUHRvTdQTyKu/aGFBGmSMkmbzPT74SNdJfPeR19mMTEmzOxYY1oJdq0hgadjx3TFPr6DT8+O6YsBvpfG9714wHfw6TPH8U3wTfBN8E3wTfBN8E3wTfBN8E3wTfCNb3zjm+Cb4Jvgm+Cb4Jvge6ny//y/63cAnw1jvjL4blTru6w6fc6ejc/+J+k6nAv/kc/VpjEr4kO/NybXTV23xG+Fvsus0+fc2vgseBKXc+HrcrqWgW1W57vMOkOdz/O8f5HvShY9l+v8Hpj33Crr/nn/q+2oHnPZ9Xlp6/dtbi1qLrajesxl1+e1o2KzJIQ95LFqOLH5dR2oV4fiKPKzzrz1n6rms4w+hPLN7FA1jGao60J9uhRXnvrOW/+1ar6Z0oeWjfc25yl7Bp94Ea8z1PWoPj2J58jPOvPW/ybep/ShM3lX3KXsGXwm1LqK9KEHAAAAALXmD5U1QmOATQAA
   </data>
  </layer>
  <layer name="FG1" width="124" height="40">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAC/+3BAQEAAACCIP+vbkhAAQAAAAAAAAAAAAAAAAAAAAAAAHwYRrZdS4BNAAA=
+   H4sIAAAAAAAC/+3bQQEAEAxA0aVQkiY0UZIAAmDvRdi/bIdFwNtqiWjFHLLou/XQW2/0Rm/0Rm/0Rm/0Rm/0Rm/01hu90Ru90Ru90Ru90Ru90Ru90VtvUph6Awn9+jvrJ/g8h193GzvbeQ56u1UAALjHAv/KqteATQAA
   </data>
  </layer>
  <layer name="FG2" width="124" height="40">

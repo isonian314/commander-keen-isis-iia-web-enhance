@@ -108,7 +108,8 @@ Legend: **[x]** done · **[~]** done with a placeholder (works end to end, but n
 - [ ] Missile Tower: big black missile, steel girders, parked spaceships as background tiles (uses white base platforms + hangar crane).
 - [ ] Ocean: sea-floor tiles, coral, brimstone (uses cave/dungeon tiles and the dungeon lava rock).
 - [ ] Secret level: Keen 4 style tiles (uses the jungle tiles; Keen is switched to the EGA sprite for the novelty).
-- [ ] Castle Garden: lily pads, cement bridges (garden tiles have hedges, plants, fruit, the painting; no lily pads yet).
+- [x] Castle Garden: lily pads (`Level.lily`, garden sheet rows 221–225) in the pond and across the lake.
+- [ ] Castle Garden: cement bridges.
 - [ ] Imperial Castle: swords, shields, guns, ammo, pictures of ships, throne room (red carpet, golden throne, chandeliers).
 - [ ] Rooftop: castle roof/battlement tiles, the door with "314" on it.
 - [ ] Dungeon extras from the doc: torture devices, flickering lights (partly there already).

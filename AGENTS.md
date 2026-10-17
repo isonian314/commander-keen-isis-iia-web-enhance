@@ -99,7 +99,7 @@ Tiled TMX, 16×16 tiles, 8 layers, encoding **base64 + gzip**. Layers in order:
 
 `TransBG`, `BG1`, `BG2`, `FG1`, `FG2`, `TransFG`, `Info`, `Sprites`
 
-Convention when editing: **BG1** = interior walls (hides parallax), **BG2** = platforms / kit surfaces, **FG1/FG2** = props in front, **TransFG** = water/lava body (and water surface one row above). Don't put INFO tiles on a graphics layer or the reverse.
+Convention when editing: **BG1** = interior walls (hides parallax), **BG2** = platforms / kit surfaces, **FG1/FG2** = props in front, **TransFG** = water/lava body (and water surface one row above; the water's surface and back edge are also drawn on BG2, see Water below). Don't put INFO tiles on a graphics layer or the reverse.
 
 Global ids:
 
@@ -125,9 +125,10 @@ Global ids:
 | Music override | `S39+n`. Default per-level track is `LEVEL_MUSIC` in `js/main.js`. |
 | Weather | `S191` night, `S210` rain, `S211` snow, `S212` cloud, `S213` lightning. Height of the sprite matters. |
 | EGA Keen | `S5` (secret level). |
-| Water | `I82` on water cells. TransFG body `(25,72)`; surface row above: TransFG `(25,71)`. |
+| Water | `I82` on water cells, starting **one row below** the bank's surface (the bank's surface row is open air above the pool). Graphics are a 3×4 block (cols 24 left / 25 mid / 26 right, rows 70 top / 71 surface / 72 body / 73 bottom), laid out as in level 6: body + bottom (row below the water) on **TransFG**; surface (the air row above the water) on **TransFG and BG2**; top (two rows above) on BG2 only, `(25,70)` over the first column, `(26,70)` over the rest, `(27,70)` one column past the last. The left edge `24` goes one column *outside* the water; the right edge `26` is the last water column. The water's top and surface go *behind* (BG1) anything already on BG2, such as pads standing in the water. The exception is the left bank, whether level with the surface or rising above it (level 2): its face and lip move to BG1 behind the water's corner, and the surface's left edge `(24,71)` covers the bank's last column on BG2. A wall rising out of the water on the right (levels 2/3): middle pieces up to the wall's sliver, half-width surface `(28,71)` on TransFG, and no `(27,70)`. See `WATER` and pass 3 of `Level.render`. |
+| Lily pad | `lv.lily(x, floor − 1, w)` in `build_levels.py`: 2 rows on BG2, bottom row in the water's surface band and one-way (`I3`), so Keen stands level with the bank. `layer="FG1"` (y = floor − 2) draws one as a land decoration with no INFO. Width 4 = primary pad `(17–20, 222–223)`; other widths = blank pad (cap `(10,222)`, random middles `11–13`, cap `(14,222)`) with random berry clusters. Berry variants: default `(18–19,222)`, pair `(18–19,221)`, 2×2 block `(18–19,224–225)`, single left `(16,222)` and right `(21,222–224)`; see `LILY`. Pads go on BG2 before the water pass so the surface lands behind them. |
 | Lava | Hurt-in-water `I84` (`INFO_HURT_1w`) + lava tiles `(22,71)` surface / `(22,72)` body. Lava splash triggers if FG_TRANS gid is **2327**. |
-| Pole | `I25` + pole graphic (e.g. brown `(29,91–92)`). Grab by jumping past it while holding Up. |
+| Pole | `I25` + pole graphic (cyan: cap `(29,88)`, body `(31,88)` repeating; `(29,91–93)` is a one-off 3-tile stick). Grab by jumping past it while holding Up. |
 | Solid border | 1-tile `I2` around the map edge. |
 
 ### Exit / progress rules (`js/main.js`)
@@ -160,7 +161,7 @@ Top tile sits in the row *above* the surface; surface on the solid row; fill bel
 | dungeon | (12,178) | (11,179) | (11,180) |
 | garden | (12,213) | (11,214) | (11,215) |
 
-Kits (except mountain/cave, shifted one column left) match the jungle block layout: slopes in cols 0–9, solid block in 11–13. `tools/build_levels.py` `KITS` / `WALLS` / `GFX` is the live list. SGA letters: a–m `(0–12, 22–23)`, n–z `(0–12, 24–25)`, 1×2 per letter.
+Kits (except mountain/cave, shifted one column left) match the jungle block layout: slopes in cols 0–9, solid block in 11–13. `tools/build_levels.py` `KITS` / `WALLS` / `GFX` / `POLES` is the live list. `GFX_ALT` lists alternative pieces a graphic swaps in at random per placement (seeded by name and position, so rebuilds are stable), e.g. the garden pod plant's two leaf and grass variants. Edges as in levels 1–9 (see the `Kit` docstring): left sliver col 10 one tile *outside* the solid, left column + sliver on **FG1**; right face col 13 (`14,+2/+3` on the last two rows) one tile outside on BG2. Inner corners (a block standing on a lower floor of the same kit): on the right the face's last row is the step piece `(13,+2)` (face + lower floor's surface, no top lip there) with `(12,+3)` in the block's column below it; on the left the sliver and left column carry on one row into the lower floor's surface on FG1 (`(10,+2)`, `(11,+2)`). A pole through a platform goes on BG2 with the platform copied to FG1 and a 3-tile hole on the row above. `build_levels.py` needs Pillow (it skips blank tiles in `GFX` rectangles). SGA letters are half a tile wide, two per tile: left-half glyph on BG1, right-half on BG2 (`Level.sign` / `sign_on`). Wood: a–m row 22 / n–z row 23 (left half), rows 24/25 (right half), cols 0–12; plain board `(20,23)`, rim `(19–21,22)` `(19,23)` `(21,23)` `(19,24)` `(17,24)` `(21,24)`, bottom-with-post `(20,24)`, post foot `(18,25)`. Blue: cols 19–31, rows 143/144 (left), 145/146 (right), no board.
 
 Sprite numbers used in maps are the `S(n)` values in `js/constants.js` (keys 14–19, items, weapons 220–228, enemies 77+). `tools/build_levels.py` repeats the useful ones as names.
 
