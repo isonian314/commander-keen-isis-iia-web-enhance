@@ -206,15 +206,15 @@ Keen starts with no weapons. Each weapon pickup gives **5 shots** (up to 99) and
 | `2` | <img src="docs/img/item-w-zeffer.png"><br>Zeffer 4000 | <img src="docs/img/proj-zeffer.png"> | 2 | 250 | Wobbles along a sine wave and leaves a purple trail; half its shots also drift upwards. Good for covering an area. | Levels 2 to 9 |
 | `3` | <img src="docs/img/item-w-pulsar.png"><br>Pulsar | <img src="docs/img/proj-pulsar.png"> | 4 | 250 | Goes straight through enemies, but its damage halves with each one it hits (4, 2, 1, 1…). | Levels 3 to 9 |
 | `4` | <img src="docs/img/item-w-solarizer.png"><br>Solarizer | <img src="docs/img/proj-solarizer.png"> | 8 | 150 | Explodes on impact. The explosion kills Keen if he touches it, so don't fire it at a nearby wall. | Levels 8, 9 |
-| `5` | <img src="docs/img/item-w-hr42.png"><br>HR-42 (Hell Rifle) | <img src="docs/img/proj-hr42.png"> | 16 | 150 | Heavy, slow bolts. | Not placed (cheat only) |
-| `6` | <img src="docs/img/item-w-plutezarp.png"><br>Plutezarp | <img src="docs/img/proj-plutezarp.png" width="100"> | 32 | beam | A laser beam that grows to 100 pixels over 0.375 s, then fades. The first enemy it reaches takes 32 damage, and so does anything else it overlaps at that moment. Forwards only. (The "deadly residue" in the help text was never added.) | Not placed (cheat only) |
+| `5` | <img src="docs/img/item-w-hr42.png"><br>HR-42 (Hell Rifle) | <img src="docs/img/proj-hr42.png"> | 16 | 150 | Heavy, slow bolts. | Level 16 |
+| `6` | <img src="docs/img/item-w-plutezarp.png"><br>Plutezarp | <img src="docs/img/proj-plutezarp.png" width="100"> | 32 | beam | A laser that runs forward until it hits a wall or an enemy, then retracts. The first enemy it reaches takes 32 damage. Where it stops it leaves a dripping blob of residue (same colours as the beam) that hurts enemies and Keen until it fades. Forwards only. | Level 16 |
 | `7` | <img src="docs/img/item-w-raygun.png"><br>Raygun (secret 1) | <img src="docs/img/proj-raygun.png"> | 1 | 200 | Keen's classic raygun. | Not placed (cheat only) |
 | `8` | <img src="docs/img/item-w-neural.png"><br>Neural Stunner (secret 2) | <img src="docs/img/proj-neural.png"> | 1 | 200 | Keen's classic stunner, and the only weapon with its own sound. | Not placed (cheat only) |
 | auto | <img src="docs/img/item-w-harpoon.png"><br>Harpoon | <img src="docs/img/proj-harpoon.png"> | 1 | 100 | The only weapon that works underwater, and it only works there. It's selected automatically when Keen enters water. | Levels 2, 3, 4, 6 |
 
 <img src="docs/img/explode-solarizer.png">
 
-The HR-42 and Plutezarp are also removed from custom levels, so the only way to try them, or the two secret weapons, is the All Weapons cheat. The HUD calls it the HR-42, while the help screen calls it the Hell Rifle 32.
+The HR-42 and Plutezarp are also removed from custom levels. The two secret weapons can only be tried with the All Weapons cheat. The HUD calls it the HR-42, while the help screen calls it the Hell Rifle 32.
 
 ## Enemies
 
@@ -645,7 +645,7 @@ The original game has nine levels. Levels 10–16 are new, generated placeholder
 
 > "They said you wouldn't make it this far... You are obsolete." (RoboKeen)
 
-* Two arenas on the castle roof. **RoboKeen** (Evil Keen stands in for him) waits in the first. The door marked "314" (with a "THREE ONE FOUR" sign) plays a dialogue in the middle of the level: RoboKeen's last words, then **Mort**. Behind it, Mort (the Shapeshifter stands in) fights Keen in the second arena, where the HR-42 and the Plutezarp lie. The far exit plays the epilogue.
+* Keen starts on a high perch with the **Plutezarp** and a gallery (open floor, a pillar, a pole down) to try the beam. Two arenas on the castle roof: **RoboKeen** (Evil Keen stands in for him) waits in the first. The door marked "314" (with a "THREE ONE FOUR" sign) plays a dialogue in the middle of the level: RoboKeen's last words, then **Mort**. Behind it, Mort (the Shapeshifter stands in) fights Keen in the second arena, where the HR-42 lies. The far exit plays the epilogue.
 * **Enemies:** Evil Keen (RoboKeen) 1, Shapeshifter (Mort) 1
 * **Pickups:** HR-42 ×1, Plutezarp ×1 · Life Potion, Pyapa Fruit
 * [Full map](resources/maps/level16-rooftop-full.png)
@@ -700,7 +700,7 @@ The web page also has **Warp to level** buttons for levels 1–16 (Shift+click p
 This port copies the original's behaviour exactly, oddities included. Some of them:
 
 * Every weapon except the Neural Stunner uses the Blowgun's sound.
-* The Super Sneakers don't protect Keen's feet, the Plutezarp leaves no residue, and the Nephthys Fruit can kill, all contrary to the Help.
+* The Super Sneakers don't protect Keen's feet, and the Nephthys Fruit can kill, both contrary to the Help.
 * Eating a Nephthys Fruit during the second of invulnerability after a hit uses it up with no effect.
 * The Urchins in level 6 can't be killed, so that level's enemy score can never reach 100%.
 * A Solarizer shot hitting a wall creates 100 explosions on the same spot.

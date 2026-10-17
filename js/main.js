@@ -483,6 +483,10 @@ function drawLevel(dt) {
   level.drawForeground(ctx);
   level.sprite_AnimFG.draw(ctx);
   level.drawForegroundTrans(ctx);
+  // Wall faces live on FG1 (one tile outside the INFO solid). The Plutezarp beam and its
+  // residue sit on that face, so they have to be drawn after the foreground or they vanish.
+  for (const s of level.sprite_Projectiles) if (s instanceof PlutezarpBeam) s.draw(ctx);
+  for (const s of level.sprite_Explosions) if (s instanceof PlutezarpGoo) s.draw(ctx);
   level.sprite_Floats.draw(ctx);
   level.sprite_WeatherFG.draw(ctx);
 

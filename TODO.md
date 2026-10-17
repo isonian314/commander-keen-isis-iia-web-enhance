@@ -64,8 +64,9 @@ Legend: **[x]** done · **[~]** done with a placeholder (works end to end, but n
       garden critters; ends at the castle gate (green door) and entrance hall.
 - [~] 15 Imperial Castle (140x58) – four stone storeys (dungeon tile set) with paintings, torches and cages: blue key opens the
       ground floor, yellow key opens the roof, exit at the roof stairs. Isonians (green/red/white), robots, Foog warriors.
-- [~] 16 Rooftop Showdown (124x40) – arena 1 with RoboKeen (Evil Keen), the "314" door (exit 16 = mid-level dialogue, SGA
-      "THREE ONE FOUR" sign), arena 2 with Mort (Shapeshifter), the HR-42 and the Plutezarp; the far exit plays the epilogue.
+- [~] 16 Rooftop Showdown (124x40) – Keen starts on a high perch with the Plutezarp and a gallery to try the beam;
+      pole down to arena 1 with RoboKeen (Evil Keen), the "314" door (exit 16 = mid-level dialogue, SGA
+      "THREE ONE FOUR" sign), arena 2 with Mort (Shapeshifter) and the HR-42; the far exit plays the epilogue.
 
 ### Cut-scenes / story (text implemented over existing art, see `js/cutscenes.js`)
 - [~] Level 10 – "Nobody here… they must be out boarding the fleet!"
@@ -138,7 +139,8 @@ Legend: **[x]** done · **[~]** done with a placeholder (works end to end, but n
 ### Weapons / items
 - [ ] Plutezarp and HR-32 should be found in the story (Plutezarp + HR-32 are used on the Shapeshifter in the epilogue). The HR-42 /
       Plutezarp are placed in level 16 for the final fight. Decide on "HR-42" vs "HR-32" naming (HUD vs doc/help).
-- [ ] Plutezarp "deadly residue" (help text) is not implemented.
+- [x] Plutezarp "deadly residue": generated blob (beam colours) with dripping goo where the beam hits a wall or
+      otherwise stops; it fades and hurts Keen and enemies.
 - [ ] notes.txt: the Shield was meant to be time-limited and upgraded by the Battery; the Ion Scanner "wasn't a thing" originally.
       Currently both are battery-powered gadgets. Decide whether to keep.
 - [ ] Ocean level: "you need FULL health to make the landing, beat the devil and swim in the lava" – not enforced.

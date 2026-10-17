@@ -515,7 +515,8 @@ class Keen extends Sprite {
             if (this.onPogo) this.onPogo = false;
             if (keys.up && this.currentWeapon !== W_BLOWGUN && this.currentWeapon !== W_PLUTEZARP) shootUp = true;
             else if (keys.down && this.state !== kON_GROUND) shootDown = true;
-            level.sprite_Projectiles.add(new Shoot(this, shootUp, shootDown));
+            if (this.currentWeapon === W_PLUTEZARP) level.sprite_Projectiles.add(new PlutezarpBeam(this));
+            else level.sprite_Projectiles.add(new Shoot(this, shootUp, shootDown));
             this.idleTimer = 0;
           }
         } else if (this.state === kIN_WATER && this.currentWeapon === W_HARPOON && this.weapon[W_HARPOON].ammo > 0) {

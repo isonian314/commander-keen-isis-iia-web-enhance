@@ -949,16 +949,23 @@ def level15():
 
 
 # =====================================================================================================
-# Level 16 - Rooftop Showdown: RoboKeen (Evil Keen stand-in) in the first arena; the "314" door is exit 16 (mid-level
-# dialogue). Behind it Mort (Shapeshifter stand-in), the HR-42 and the Plutezarp; the far exit ends the game.
+# Level 16 - Rooftop Showdown: Keen starts on a high perch with the Plutezarp and a clear gallery (pillar + open air)
+# to try the beam and its residue, then a pole down into arena 1 with RoboKeen (Evil Keen stand-in). The "314" door is
+# exit 16 (mid-level dialogue). Behind it Mort (Shapeshifter stand-in) and the HR-42; the far exit ends the game.
 # =====================================================================================================
 def level16():
     W, H, G = 124, 40, 34
+    L = 12                                   # start perch floor (high above the rooftop)
     lv = Level(W, H, "dungeon", 7)
     lv.ground(0, W - 1, G)
     for x in range(1, W - 1, 6):
         lv.solid(x, G - 2, x + 1, G - 1)
     lv.clear(4, G - 2, 50, G - 1).clear(60, G - 2, 118, G - 1)
+    # start perch: pickup near Keen, empty gallery, a tall pillar to splat, hole + pole down into arena 1
+    lv.solid(1, L, 28, L + 1)
+    lv.solid(21, L - 5, 22, L - 1)
+    lv.clear(26, L, 26, L + 1)
+    lv.pole(26, L - 5, G - 1)
     # arena 1
     lv.ow(14, 19, G - 5).ow(26, 31, G - 8).ow(38, 43, G - 5)
     lv.solid(54, 1, 55, G - 5)
@@ -970,9 +977,10 @@ def level16():
     lv.ow(70, 75, G - 5).ow(84, 89, G - 8).ow(98, 103, G - 5)
     lv.exit(118, G, 1, gfx="doorway_dark")
     lv.gfx_on("torch_yellow", 62, G).gfx_on("torch_yellow", 110, G)
-    lv.start(3, G)
+    lv.start(3, L)
+    lv.sprite(7, L - 2, PLUTEZARP)
     lv.enemy(34, G, EVILKEEN, -1)
-    lv.sprite(60, G - 3, HR42).sprite(64, G - 3, PLUTEZARP).sprite(86, G - 11, POTION)
+    lv.sprite(60, G - 3, HR42).sprite(86, G - 11, POTION)
     lv.enemy(94, G, SHAPESHIFTER, -1)
     lv.beans(8, 12, G - 3).items(26, 31, G - 11, PYAPA, 5).items(14, 43, G - 8, COLA, 29)
     return lv.save("level16-rooftop.tmx")

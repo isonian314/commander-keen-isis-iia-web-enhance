@@ -399,11 +399,11 @@ selects it. When a weapon runs out, Keen switches to the next weaker weapon that
     <td>Explodes on impact. The explosion kills Keen if he touches it, so don't fire it at a nearby wall.</td><td>Levels 8, 9</td></tr>
   <tr><td><kbd>5</kbd></td><td><img class="px" src="docs/img/item-w-hr42.png" alt=""><br>HR-42 (Hell Rifle)</td>
     <td><img class="px" src="docs/img/proj-hr42.png" alt=""></td><td class="num">16</td><td class="num">150</td>
-    <td>Heavy, slow bolts.</td><td>Not placed (cheat only)</td></tr>
+    <td>Heavy, slow bolts.</td><td>Level 16</td></tr>
   <tr><td><kbd>6</kbd></td><td><img class="px" src="docs/img/item-w-plutezarp.png" alt=""><br>Plutezarp</td>
     <td><img class="px" src="docs/img/proj-plutezarp.png" alt=""></td><td class="num">32</td><td class="num">beam</td>
-    <td>A laser beam that grows to 100 pixels over 0.375 s, then fades. The first enemy it reaches takes 32 damage, and so does anything else
-      it overlaps at that moment. Forwards only. (The "deadly residue" in the help text was never added.)</td><td>Not placed (cheat only)</td></tr>
+    <td>A laser that runs forward until it hits a wall or an enemy, then retracts. The first enemy it reaches takes 32 damage.
+      Where it stops it leaves a dripping blob of residue (same colours as the beam) that hurts enemies and Keen until it fades. Forwards only.</td><td>Level 16</td></tr>
   <tr><td><kbd>7</kbd></td><td><img class="px" src="docs/img/item-w-raygun.png" alt=""><br>Raygun (secret 1)</td>
     <td><img class="px" src="docs/img/proj-raygun.png" alt=""></td><td class="num">1</td><td class="num">200</td>
     <td>Keen's classic raygun.</td><td>Not placed (cheat only)</td></tr>
@@ -414,8 +414,8 @@ selects it. When a weapon runs out, Keen switches to the next weaker weapon that
     <td><img class="px" src="docs/img/proj-harpoon.png" alt=""></td><td class="num">1</td><td class="num">100</td>
     <td>The only weapon that works underwater, and it only works there. It's selected automatically when Keen enters water.</td><td>Levels 2, 3, 4, 6</td></tr>
 </table></div>
-<p class="note">Speeds are in pixels per second. The HR-42 and Plutezarp are also removed from custom levels, so the only way to try them,
-or the two secret weapons, is the All Weapons cheat. The HUD calls it the HR-42, while the help screen calls it the Hell Rifle 32.</p>
+<p class="note">Speeds are in pixels per second. The HR-42 and Plutezarp are also removed from custom levels. The two secret weapons can only
+be tried with the All Weapons cheat. The HUD calls it the HR-42, while the help screen calls it the Hell Rifle 32.</p>
 </section>
 
 <!-- =================================================================== -->
@@ -797,7 +797,7 @@ Full maps are linked under each level.</p>
     <blockquote>"They said you wouldn't make it this far... You are obsolete." <small>RoboKeen</small></blockquote>
     <ul>
       <li>124 × 40 tiles &middot; music "Rhythm of a Robot"</li>
-      <li>Two arenas on the castle roof. <strong>RoboKeen</strong> (Evil Keen stands in for him) waits in the first. The door marked "314" (with a "THREE ONE FOUR" sign) plays a dialogue in the middle of the level: RoboKeen's last words, then <strong>Mort</strong>. Behind it, Mort (the Shapeshifter stands in) fights Keen in the second arena, where the HR-42 and the Plutezarp lie. The far exit plays the epilogue.</li>
+      <li>Keen starts on a high perch with the <strong>Plutezarp</strong> and a gallery (open floor, a pillar, a pole down) to try the beam. Two arenas on the castle roof: <strong>RoboKeen</strong> (Evil Keen stands in for him) waits in the first. The door marked "314" (with a "THREE ONE FOUR" sign) plays a dialogue in the middle of the level: RoboKeen's last words, then <strong>Mort</strong>. Behind it, Mort (the Shapeshifter stands in) fights Keen in the second arena, where the HR-42 lies. The far exit plays the epilogue.</li>
       <li><strong>Enemies (2):</strong> Evil Keen (RoboKeen) 1, Shapeshifter (Mort) 1</li>
       <li><strong>Items:</strong> 5 for 100%, 700 points &middot; HR-42 ×1, Plutezarp ×1 &middot; Life Potion, Pyapa Fruit</li>
       <li><a href="resources/maps/level16-rooftop-full.png">Full map</a></li>
@@ -880,7 +880,7 @@ settings panel. They only work during a level, and each one also has a button un
 <p>This port copies the original's behaviour exactly, oddities included. Some of them:</p>
 <ul>
   <li>Every weapon except the Neural Stunner uses the Blowgun's sound.</li>
-  <li>The Super Sneakers don't protect Keen's feet, the Plutezarp leaves no residue, and the Nephthys Fruit can kill, all contrary to the Help.</li>
+  <li>The Super Sneakers don't protect Keen's feet, and the Nephthys Fruit can kill, both contrary to the Help.</li>
   <li>Eating a Nephthys Fruit during the second of invulnerability after a hit uses it up with no effect.</li>
   <li>The Urchins in level 6 can't be killed, so that level's enemy score can never reach 100%.</li>
   <li>A Solarizer shot hitting a wall creates 100 explosions on the same spot.</li>
@@ -913,18 +913,18 @@ Commander Keen is a trademark of id Software; this is a non-commercial fan game.
 <script src="js/constants.js"></script>
 <script src="js/tmx.js"></script>
 <script src="js/effects.js"></script>
-<script src="js/weapons.js"></script>
+<script src="js/weapons.js?plute=1"></script>
 <script src="js/items.js"></script>
 <script src="js/enemies.js"></script>
 <script src="js/objects.js"></script>
 <script src="js/level.js"></script>
-<script src="js/keen.js"></script>
+<script src="js/keen.js?plute=1"></script>
 <script src="js/hud.js"></script>
 <script src="js/cutscenes.js"></script>
 <script src="js/game.js"></script>
 <script src="js/menu.js"></script>
 <script src="js/worldmap.js"></script>
-<script src="js/main.js"></script>
+<script src="js/main.js?plute=1"></script>
 <script src="js/page.js"></script>
 </body>
 </html>
